@@ -26,8 +26,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -42,7 +42,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.samples.vision.ocrreader.ui.camera.CameraSource;
 import com.google.android.gms.samples.vision.ocrreader.ui.camera.CameraSourcePreview;
 import com.google.android.gms.samples.vision.ocrreader.ui.camera.GraphicOverlay;
@@ -50,6 +49,7 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -305,6 +305,45 @@ public final class OcrCaptureActivity extends AppCompatActivity {
                 .setMessage(R.string.no_camera_permission)
                 .setPositiveButton(R.string.ok, listener)
                 .show();
+    }
+
+    public static void addAsContactConfirmed(final Context context, String[] person) {//final Person person) {
+
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+
+        intent.putExtra(ContactsContract.Intents.Insert.NAME, person[0]); //name);
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE, person[1]); //.mobile);
+        intent.putExtra(ContactsContract.Intents.Insert.EMAIL, person[2]); //.email);
+
+        context.startActivity(intent);
+
+    }
+
+
+    void makeArrayList() {
+        ArrayList<String> contactLabels = new ArrayList<>();
+        String label = ContactsContract.Intents.Insert.NAME;
+        contactLabels.add(label.substring(0, 1).toUpperCase() + label.substring(1));
+        label = ContactsContract.Intents.Insert.PHONE;
+        contactLabels.add(label.substring(0, 1).toUpperCase() + label.substring(1));
+        label = ContactsContract.Intents.Insert.EMAIL;
+        contactLabels.add(label.substring(0, 1).toUpperCase() + label.substring(1));
+        label = ContactsContract.Intents.Insert.COMPANY;
+        contactLabels.add(label.substring(0, 1).toUpperCase() + label.substring(1));
+        label = ContactsContract.Intents.Insert.JOB_TITLE;
+        contactLabels.add(label.substring(0, 1).toUpperCase() + label.substring(1));
+        label = ContactsContract.Intents.Insert.IM_HANDLE;
+        contactLabels.add(label.substring(0, 1).toUpperCase() + label.substring(1));
+        label = ContactsContract.Intents.Insert.POSTAL;
+        contactLabels.add(label.substring(0, 1).toUpperCase() + label.substring(1));
+        label = ContactsContract.Intents.Insert.SECONDARY_PHONE;
+        contactLabels.add(label.substring(0, 1).toUpperCase() + label.substring(1));
+        label = ContactsContract.Intents.Insert.NOTES;
+        contactLabels.add(label.substring(0, 1).toUpperCase() + label.substring(1));
+        label = ContactsContract.Intents.Insert.SECONDARY_EMAIL;
+        contactLabels.add(label.substring(0, 1).toUpperCase() + label.substring(1));
+
     }
 
     /**

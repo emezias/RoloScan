@@ -17,4 +17,17 @@
     <string name="description_info">Info</string>
     <string name="request_permission">This app needs camera permission.</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+
+    <string-array name="Labels">
+        <item>Name</item>
+        <item>Phone</item>
+        <item>Email</item>
+        <item>Company</item>
+        <item>Job Title</item>
+        <item>Address</item>
+        <item>I.M.</item>
+        <item>Notes</item>
+        <item>Second Phone</item>
+        <item>Second Email</item>
+    </string-array>
 </resources>

@@ -2,6 +2,7 @@
 <resources>
     <string name="retry">Retry</string>
     <string name="confirm">Create Context</string>
+    <string name="photo">Take Photo</string>
 
     <string name="ocr_success">Text read successfully</string>
     <string name="ocr_failure">No text captured</string>

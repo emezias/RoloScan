@@ -36,7 +36,7 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
     static final ArrayList<Integer> selectedValues = new ArrayList<>();
 
     public ContactSpinnerAdapter(Context ctx) {
-        if (sValueList == null) sValueList = ctx.getResources().getStringArray(R.array.Labels);
+        if (sValueList == null) sValueList = ctx.getResources().getStringArray(R.array.labels);
     }
 
     @Override

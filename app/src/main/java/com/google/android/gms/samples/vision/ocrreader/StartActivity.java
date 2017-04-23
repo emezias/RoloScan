@@ -109,10 +109,10 @@ public class StartActivity extends AppCompatActivity {
             bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
             final Frame frame = (new Frame.Builder()).setBitmap(bitmap).build();
             final TextRecognizer detector = new TextRecognizer.Builder(this).build();
-            Log.d(TAG, "is operational? " + detector.isOperational());
             final SparseArray<TextBlock> blocks = detector.detect(frame);
             Log.d(TAG, "any blocks? " + blocks.size());
             detector.release();
+            final int sz = getResources().getTextArray(R.array.labels).length-1;
             TextBlock blk;
             TextView tv = (TextView) findViewById(R.id.start_message);
             StringBuilder bull = new StringBuilder();
@@ -120,11 +120,13 @@ public class StartActivity extends AppCompatActivity {
                 mContactFields = new String[blocks.size()];
                 for (int dex = 0; dex < blocks.size(); dex++) {
                     blk = blocks.valueAt(dex);
-                    mContactFields[dex] = blk.getValue();
+                    if (dex > sz) mContactFields[sz] = mContactFields[sz] + "\n" + blk.getValue();
+                    else mContactFields[dex] = blk.getValue();
                     Log.d(TAG, "block value? " + blk.getValue());
                     bull.append(blk.getValue() + "\n");
                 } //end for loop
-                tv.setText(bull.toString());
+                //tv.setText(bull.toString());
+                showConfirmDialog(bull.toString(), mContactFields);
                 Log.d(TAG, "any text? " + bull.toString());
                 bull.setLength(0);
                 bull.trimToSize();
@@ -143,6 +145,9 @@ public class StartActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //startGalleryChooser();
+                        final Intent tnt = new Intent(getApplicationContext(), ConfirmContactActivity.class);
+                        tnt.putExtra(ConfirmContactActivity.TAG, mContactFields);
+                        startActivity(tnt);
                     }
                 })
                 .setNegativeButton(R.string.retry, new DialogInterface.OnClickListener() {

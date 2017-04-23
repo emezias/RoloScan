@@ -53,7 +53,7 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
             spinner.setTag(dex);
             spinner.setOnItemClickListener(this);
             text = (EditText) findViewById(editFields[dex]);
-            text.setText(mContactFields[dex++]);
+            text.setText(s);
         } //finished setting text...
         final int sz = editFields.length;
         for (; dex < sz; dex++) {

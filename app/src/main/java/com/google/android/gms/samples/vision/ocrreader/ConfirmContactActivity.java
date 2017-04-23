@@ -2,6 +2,8 @@ package com.google.android.gms.samples.vision.ocrreader;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -12,7 +14,7 @@ import android.widget.Toast;
  * Created by emezias on 4/20/17.
  */
 
-public class ConfirmContactActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class ConfirmContactActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static final String TAG = ConfirmContactActivity.class.getSimpleName();
     String[] mContactFields;
@@ -46,25 +48,23 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
         EditText text;
         for (String s: mContactFields) {
             adapter = new ContactSpinnerAdapter(this);
-            adapter.setDefault(dex);
+            text = (EditText) findViewById(editFields[dex]);
+            Log.d(TAG, "text to set: " + s);
+            if (!TextUtils.isEmpty(s)) {
+                text.setText(s);
+                adapter.setDefault(dex);
+            }
             spinner = (Spinner)findViewById(spinners[dex]);
             spinner.setAdapter(adapter);
             spinner.setSelection(dex);
-            spinner.setTag(dex);
-            spinner.setOnItemClickListener(this);
-            text = (EditText) findViewById(editFields[dex]);
-            text.setText(s);
-        } //finished setting text...
-        final int sz = editFields.length;
-        for (; dex < sz; dex++) {
-            findViewById(editFields[dex]).setVisibility(View.GONE);
-            findViewById(spinners[dex]).setVisibility(View.GONE);
-        }
-
+            spinner.setTag(dex++);
+            //important to set listener after
+            spinner.setOnItemSelectedListener(this);
+        } //end for loop
     }
 
-    public void SaveContact(View v) {
-
+    public void saveContact(View v) {
+        Log.d(TAG, "To Do");
     }
 
     void showConfirmDialog(String displayText, String[] contactText) {
@@ -85,7 +85,7 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         final int previous = (int) parent.getTag();
         if (position == previous) return;
         ContactSpinnerAdapter adapter = (ContactSpinnerAdapter)parent.getAdapter();
@@ -96,4 +96,7 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
             Toast.makeText(this, "Each label must be unique, mix and match", Toast.LENGTH_LONG).show();
         }
     }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) { }
 }

@@ -46,11 +46,7 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.spinner_item, null);
             convertView.setTag(convertView.findViewById(R.id.labelText));
         }
-        if (selectedValues.contains(position)) {
-            ((View)convertView.getTag()).setEnabled(false);
-        } else {
-            ((View)convertView.getTag()).setEnabled(true);
-        }
+
         ((TextView)convertView.getTag()).setText(sValueList[position]);
         return convertView;
     }
@@ -99,7 +95,7 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return 0;
+        return 1;
     }
 
     @Override

@@ -1,180 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.google.android.gms.samples.vision.ocrreader.StartActivity">
+    tools:context="com.google.android.gms.samples.vision.ocrreader.ConfirmContactActivity">
 
-    <Spinner android:id="@+id/cc_spinner1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/labels" />
-
-    <EditText android:id="@+id/cc_edit1"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cc_spinner1"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="16dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp">
 
-    <Spinner android:id="@+id/cc_spinner2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cc_spinner1"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/labels" />
+        <Spinner
+            android:id="@+id/cc_spinner1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:entries="@array/labels" />
 
-    <EditText android:id="@+id/cc_edit2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cc_spinner2"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="16dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <EditText
+            android:id="@+id/cc_edit1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_spinner1"
+            android:layout_marginTop="6dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Spinner android:id="@+id/cc_spinner3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cc_spinner2"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/labels" />
+        <Spinner
+            android:id="@+id/cc_spinner2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_edit1"
+            android:layout_marginTop="16dp"
+            android:entries="@array/labels" />
 
-    <EditText android:id="@+id/cc_edit3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cc_spinner3"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="16dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <EditText
+            android:id="@+id/cc_edit2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_spinner2"
+            android:layout_marginTop="6dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Spinner android:id="@+id/cc_spinner4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cc_spinner3"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/labels" />
+        <Spinner
+            android:id="@+id/cc_spinner3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_edit2"
+            android:layout_marginTop="16dp"
+            android:entries="@array/labels" />
 
-    <EditText android:id="@+id/cc_edit4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cc_spinner4"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="16dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <EditText
+            android:id="@+id/cc_edit3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_spinner3"
+            android:layout_marginTop="6dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Spinner android:id="@+id/cc_spinner5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cc_spinner4"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/labels" />
+        <Spinner
+            android:id="@+id/cc_spinner4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_edit3"
+            android:layout_marginTop="16dp"
+            android:entries="@array/labels" />
 
-    <EditText android:id="@+id/cc_edit5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cc_spinner5"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="16dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <EditText
+            android:id="@+id/cc_edit4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_spinner4"
+            android:layout_marginTop="6dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Spinner android:id="@+id/cc_spinner6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cc_spinner5"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/labels" />
+        <Spinner
+            android:id="@+id/cc_spinner5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_edit4"
+            android:layout_marginTop="16dp"
+            android:entries="@array/labels" />
 
-    <EditText android:id="@+id/cc_edit6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cc_spinner6"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="16dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <EditText
+            android:id="@+id/cc_edit5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_spinner5"
+            android:layout_marginTop="6dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Spinner android:id="@+id/cc_spinner7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cc_spinner6"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/labels" />
+        <Spinner
+            android:id="@+id/cc_spinner6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_edit5"
+            android:layout_marginTop="16dp"
+            android:entries="@array/labels" />
 
-    <EditText android:id="@+id/cc_edit7"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cc_spinner7"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="16dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <EditText
+            android:id="@+id/cc_edit6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_spinner6"
+            android:layout_marginTop="6dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Spinner android:id="@+id/cc_spinner8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cc_spinner7"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/labels" />
+        <Spinner
+            android:id="@+id/cc_spinner7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_edit6"
+            android:layout_marginTop="16dp"
+            android:entries="@array/labels" />
 
-    <EditText android:id="@+id/cc_edit8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cc_spinner8"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="16dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <EditText
+            android:id="@+id/cc_edit7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_spinner7"
+            android:layout_marginTop="6dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Spinner android:id="@+id/cc_spinner9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cc_spinner8"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/labels" />
+        <Spinner
+            android:id="@+id/cc_spinner8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_edit7"
+            android:layout_marginTop="16dp"
+            android:entries="@array/labels" />
 
-    <EditText android:id="@+id/cc_edit9"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cc_spinner9"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="16dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <EditText
+            android:id="@+id/cc_edit8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_spinner8"
+            android:layout_marginTop="6dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Spinner android:id="@+id/cc_spinner10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cc_spinner9"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/labels" />
+        <Spinner
+            android:id="@+id/cc_spinner9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_edit8"
+            android:layout_marginTop="16dp"
+            android:entries="@array/labels" />
 
-    <EditText android:id="@+id/cc_edit10"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cc_spinner10"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="16dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <EditText
+            android:id="@+id/cc_edit9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_spinner9"
+            android:layout_marginTop="6dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <ImageButton android:id="@+id/cc_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:src="@android:drawable/ic_menu_camera"
-        android:onClick="saveContact"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        <Spinner
+            android:id="@+id/cc_spinner10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_edit9"
+            android:layout_marginTop="16dp"
+            android:entries="@array/labels" />
 
-</RelativeLayout>
+        <EditText
+            android:id="@+id/cc_edit10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cc_spinner10"
+            android:layout_marginTop="6dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ImageButton
+            android:id="@+id/cc_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/cc_edit10"
+            android:layout_centerHorizontal="true"
+            android:onClick="saveContact"
+            android:src="@android:drawable/ic_menu_camera"
+            android:text="Save" />
+
+    </RelativeLayout>
+</ScrollView>

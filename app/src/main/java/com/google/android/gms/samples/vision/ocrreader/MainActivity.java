@@ -46,7 +46,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         statusMessage = (TextView)findViewById(R.id.status_message);
         textValue = (TextView)findViewById(R.id.text_value);
 
@@ -117,4 +116,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    //TODO frame.builder.setBitmap
 }

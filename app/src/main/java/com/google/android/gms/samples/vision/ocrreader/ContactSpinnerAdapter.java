@@ -2,7 +2,6 @@ package com.google.android.gms.samples.vision.ocrreader;
 
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.graphics.Color;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by emezias on 4/13/17.
@@ -33,24 +31,17 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
             ContactsContract.Intents.Insert.SECONDARY_PHONE,
             ContactsContract.Intents.Insert.SECONDARY_EMAIL
     };
-    public static final String BLANK = "Unused";
 
-    static final ArrayList<String> sValueList = new ArrayList<>();
+    static String[] sValueList;
     static final ArrayList<Integer> selectedValues = new ArrayList<>();
 
     public ContactSpinnerAdapter(Context ctx) {
-        if (!sValueList.contains(BLANK)) {
-            sValueList.add(BLANK);
-            sValueList.addAll(Arrays.asList(
-                    ctx.getResources().getStringArray(R.array.Labels)
-            ));
-        } //data ready
-
+        if (sValueList == null) sValueList = ctx.getResources().getStringArray(R.array.Labels);
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        if (position >= sValueList.size()) return null;
+        if (position >= sValueList.length) return null;
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.spinner_item, null);
             convertView.setTag(convertView.findViewById(R.id.labelText));
@@ -60,7 +51,7 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
         } else {
             ((View)convertView.getTag()).setEnabled(true);
         }
-        ((TextView)convertView.getTag()).setText(sValueList.get(position));
+        ((TextView)convertView.getTag()).setText(sValueList[position]);
         return convertView;
     }
 
@@ -72,7 +63,7 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
 
     @Override
     public int getCount() {
-        return sValueList.size();
+        return sValueList.length;
     }
 
     @Override
@@ -92,13 +83,12 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (position >= sValueList.size()) return null;
+        if (position >= sValueList.length) return null;
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.spinner_item, null);
             convertView.setTag(convertView.findViewById(R.id.labelText));
         }
-        ((TextView)convertView.getTag()).setText(sValueList.get(position));
-        ((TextView)convertView.getTag()).setTextColor(Color.BLACK);
+        ((TextView)convertView.getTag()).setText(sValueList[position]);
         return convertView;
     }
 
@@ -115,5 +105,19 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
     @Override
     public boolean isEmpty() {
         return false;
+    }
+
+    //These two methods help keep things in order
+    public void setDefault(int valueShown) {
+        selectedValues.add(valueShown);
+    }
+
+    public void setNewSelection(int selection, int tagValue) {
+        selectedValues.remove(tagValue);
+        selectedValues.add(selection);
+    }
+
+    public boolean checkUnique(int newSelection) {
+        return selectedValues.contains(newSelection);
     }
 }

@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.google.android.gms.samples.vision.barcodereader"
         minSdkVersion 21
-        targetSdkVersion 22
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
     }

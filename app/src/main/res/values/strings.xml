@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="retry">Retry</string>
-    <string name="confirm">Create Context</string>
+    <string name="confirm">Create Contact</string>
     <string name="photo">Take Photo</string>
 
     <string name="ocr_success">Text read successfully</string>

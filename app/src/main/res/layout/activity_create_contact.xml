@@ -179,7 +179,7 @@
             android:layout_below="@id/cc_edit10"
             android:layout_centerHorizontal="true"
             android:onClick="saveContact"
-            android:src="@android:drawable/ic_menu_camera"
+            android:src="@android:drawable/ic_menu_save"
             android:text="Save" />
 
     </RelativeLayout>

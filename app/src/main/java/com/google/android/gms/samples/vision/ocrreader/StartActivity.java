@@ -92,20 +92,19 @@ public class StartActivity extends AppCompatActivity {
             final SparseArray<TextBlock> blocks = detector.detect(frame);
 
             detector.release();
-            final int sz = getResources().getTextArray(R.array.labels).length-1;
+            final int sz = getResources().getTextArray(R.array.labels).length;
             mContactFields = new String[sz];
             TextBlock blk;
             TextView tv = (TextView) findViewById(R.id.start_message);
             StringBuilder bull = new StringBuilder();
             if (blocks.size() > 0) {
                 int contactDex = 0;
-                mContactFields = new String[sz];
                 for (int dex = 0; dex < blocks.size(); dex++) {
                     blk = blocks.valueAt(dex);
                     for (Text line: blk.getComponents()) {
                         Log.d(TAG, "line value? " + line.getValue());
-                        if (contactDex > sz) mContactFields[sz] = mContactFields[sz] + "\n" + line.getValue();
-                        else mContactFields[contactDex++] = line.getValue();
+                        if (contactDex < sz) mContactFields[contactDex++] = line.getValue();
+                        else mContactFields[sz-1] = mContactFields[sz-1] + "\n" + line.getValue();
                         bull.append(line.getValue() + "\n");
                     }
                 } //end for loop

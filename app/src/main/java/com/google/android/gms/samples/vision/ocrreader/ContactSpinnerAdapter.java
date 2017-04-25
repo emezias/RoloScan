@@ -151,7 +151,14 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
                     map.put(valueShown, IND_PHONE1);
                     break;
                 }
-            } else if (Character.isDigit(valueShown.charAt(0)) &&
+            } else if (valueShown.indexOf("-") > -1) {
+                dex = valueShown.indexOf("-");
+                if (valueShown.substring(dex+1).contains("-") && selected.contains(IND_PHONE1)) {
+                    selected.remove(selected.indexOf(IND_PHONE1));
+                    map.put(valueShown, IND_PHONE1);
+                    break;
+                }
+            }else if (Character.isDigit(valueShown.charAt(0)) &&
                     Character.isDigit(valueShown.charAt(valueShown.length() - 1))) {
                 if (selected.contains(IND_ADDR)) {
                     selected.remove(selected.indexOf(IND_ADDR));

@@ -25,13 +25,15 @@
             android:value="ocr" />
 
         <activity android:name="com.google.android.gms.samples.vision.ocrreader.StartActivity"
-            android:label="Snap Card">
+            android:label="Snap Card"
+            android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name="com.google.android.gms.samples.vision.ocrreader.ConfirmContactActivity"
+            android:screenOrientation="sensorPortrait"
             android:label="Adjust fields and Save"/>
         <provider
             android:name="android.support.v4.content.FileProvider"

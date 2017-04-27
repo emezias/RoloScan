@@ -1,9 +1,11 @@
 package com.google.android.gms.samples.vision.ocrreader;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -73,7 +75,9 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
 
     public void saveContact(View v) {
         Log.d(TAG, "To Do");
-        ArrayList<Integer> duplicates = new ArrayList<>();
+        createContactTest();
+
+        /*ArrayList<Integer> duplicates = new ArrayList<>();
         HashMap<String, String> contactMap = new HashMap<>();
         String value, key;
         String[] contactKeys = getResources().getStringArray(R.array.contact_keys);
@@ -91,21 +95,116 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
         }
         if (duplicates.isEmpty()) {
             createContact(contactMap);
-        } else showDuplicatesDialog(duplicates, contactMap);
+        } else showDuplicatesDialog(duplicates, contactMap);*/
+    }
+
+    void createContactTest() {
+        ArrayList<ContentValues> data = new ArrayList<ContentValues>();
+
+        ContentValues row1 = new ContentValues();
+        row1.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE);
+        row1.put(ContactsContract.CommonDataKinds.Organization.COMPANY, "Android");
+        data.add(row1);
+
+        ContentValues row2 = new ContentValues();
+        row2.put(Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+        row2.put(ContactsContract.CommonDataKinds.Email.TYPE, ContactsContract.CommonDataKinds.Email.TYPE_CUSTOM);
+        row2.put(ContactsContract.CommonDataKinds.Email.LABEL, "Green Bot");
+        row2.put(ContactsContract.CommonDataKinds.Email.ADDRESS, "android@android.com");
+        data.add(row2);
+
+        Intent intent = new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI);
+        intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, data);
+
+        startActivity(intent);
     }
 
     private void createContact(HashMap<String, String> contactMap) {
         // Creates a new Intent to insert a contact
-        Intent tnt = new Intent(ContactsContract.Intents.Insert.ACTION); //ACTION_INSERT_OR_EDIT);
-        // Sets the MIME type to match the Contacts Provider
-        //tnt.setType(ContactsContract.RawContacts.CONTENT_TYPE);
-        tnt.setType(ContactsContract.Contacts.CONTENT_TYPE);
-
+        ArrayList<ContentValues> data = new ArrayList<>();
+        ContentValues contactdata;
         for (String key: contactMap.keySet()) {
-            tnt.putExtra(key, contactMap.get(key));
             Log.d(TAG, key + " and text to set: " + contactMap.get(key));
+            switch(key) {
+                case ContactsContract.Intents.Insert.NAME:
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.StructuredName.FULL_NAME_STYLE, contactMap.get(key));
+                    data.add(contactdata);
+                    break;
+                case ContactsContract.Intents.Insert.PHONE:
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_HOME);
+                    contactdata.put(ContactsContract.CommonDataKinds.Phone.NUMBER, contactMap.get(key));
+                    data.add(contactdata);
+                    break;
+                case ContactsContract.Intents.Insert.EMAIL:
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Email.TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK);
+                    contactdata.put(ContactsContract.CommonDataKinds.Email.ADDRESS, contactMap.get(key));
+                    data.add(contactdata);
+                    break;
+                case ContactsContract.Intents.Insert.COMPANY:
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Organization.COMPANY, contactMap.get(key));
+                    data.add(contactdata);
+                    break;
+                case ContactsContract.Intents.Insert.JOB_TITLE:
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Organization.TITLE, contactMap.get(key));
+                    data.add(contactdata);
+                    break;
+                case ContactsContract.Intents.Insert.POSTAL:
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS, contactMap.get(key));
+                    data.add(contactdata);
+                    break;
+                case ContactsContract.Intents.Insert.IM_HANDLE:
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Im.PROTOCOL, contactMap.get(key));
+                    data.add(contactdata);
+                    break;
+                case ContactsContract.Intents.Insert.NOTES:
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Note.NOTE, contactMap.get(key));
+                    data.add(contactdata);
+                    break;
+                case ContactsContract.Intents.Insert.SECONDARY_PHONE:
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_OTHER);
+                    contactdata.put(ContactsContract.CommonDataKinds.Phone.NUMBER, contactMap.get(key));
+                    data.add(contactdata);
+                    break;
+                case ContactsContract.Intents.Insert.SECONDARY_EMAIL:
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Email.TYPE, ContactsContract.CommonDataKinds.Email.TYPE_OTHER);
+                    contactdata.put(ContactsContract.CommonDataKinds.Email.ADDRESS, contactMap.get(key));
+                    data.add(contactdata);
+                    break;
+            }
         }
-        startActivity(tnt);
+
+        //Intent intent = new Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI);
+        /*Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);*/
+        // Creates a new Intent to insert a contact
+        //Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+        final Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+        // Sets the MIME type to match the Contacts Provider
+        intent.setType(Contacts.CONTENT_ITEM_TYPE);
+        intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, data);
+        startActivity(intent);
+
+        startActivity(intent);
         for (int id: editFields) {
             ((EditText)findViewById(id)).setText("");
         }

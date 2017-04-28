@@ -8,19 +8,6 @@
     <string name="ocr_failure">No text captured</string>
     <string name="ocr_error">"Error reading text: %1$s"</string>
 
-    <string-array name="contact_keys">
-        <item>ContactsContract.Intents.Insert.NAME</item>
-        <item>ContactsContract.Intents.Insert.PHONE</item>
-        <item>ContactsContract.Intents.Insert.EMAIL</item>
-        <item>ContactsContract.Intents.Insert.COMPANY</item>
-        <item>ContactsContract.Intents.Insert.JOB_TITLE</item>
-        <item>ContactsContract.Intents.Insert.POSTAL</item>
-        <item>ContactsContract.Intents.Insert.IM_HANDLE</item>
-        <item>ContactsContract.Intents.Insert.NOTES</item>
-        <item>ContactsContract.Intents.Insert.SECONDARY_PHONE</item>
-        <item>ContactsContract.Intents.Insert.SECONDARY_EMAIL</item>
-    </string-array>
-
     <string-array name="labels">
         <item>Name</item>
         <item>Phone</item>

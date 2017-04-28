@@ -61,7 +61,7 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
             text = (EditText) findViewById(editFields[dex]);
             spinner = (Spinner)findViewById(spinners[dex]);
             spinner.setAdapter(adapter);
-            Log.d(TAG, "text to set: " + s);
+            //Log.d(TAG, "text to set: " + s);
             if (!TextUtils.isEmpty(s)) {
                 text.setText(s);
             }
@@ -75,27 +75,27 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
 
     public void saveContact(View v) {
         Log.d(TAG, "To Do");
-        createContactTest();
-
-        /*ArrayList<Integer> duplicates = new ArrayList<>();
-        HashMap<String, String> contactMap = new HashMap<>();
-        String value, key;
-        String[] contactKeys = getResources().getStringArray(R.array.contact_keys);
+        //createContactTest();
+        ArrayList<Integer> duplicates = new ArrayList<>();
+        HashMap<Integer, String> contactMap = new HashMap<>();
+        String value;
         int spinnerDex;
         for(int dex = 0; dex < editFields.length; dex++) {
             value = ((EditText) findViewById(editFields[dex])).getText().toString();
             if (!TextUtils.isEmpty(value)) {
                 spinnerDex = ((Spinner) findViewById(spinners[dex])).getSelectedItemPosition();
-                if (contactMap.containsKey(contactKeys[spinnerDex])) {
+                if (contactMap.get(spinnerDex) != null) {
                     duplicates.add(editFields[dex]);
                 } else {
-                    contactMap.put(contactKeys[spinnerDex], value);
+                    contactMap.put(spinnerDex, value);
+                    Log.d(TAG, "value " + value);
+                    Log.d(TAG, "key " + spinnerDex);
                 }
             }
         }
         if (duplicates.isEmpty()) {
             createContact(contactMap);
-        } else showDuplicatesDialog(duplicates, contactMap);*/
+        } else showDuplicatesDialog(duplicates);
     }
 
     void createContactTest() {
@@ -119,71 +119,99 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
         startActivity(intent);
     }
 
-    private void createContact(HashMap<String, String> contactMap) {
+    /**
+     * Parse a line of text representing a name into the proper contact fields
+     * @param fullName one line of text encompassing all Contact Structured name fields
+     * @return Given name and Family name fields - as good as it gets
+     */
+    String[] splitName(String fullName) {
+        String[] names = fullName.split(" ");
+        switch (names.length) {
+            case 1: return new String[] { fullName, ""};
+            case 2: return names;
+        }
+        StringBuilder tmp = new StringBuilder(names[2].length());
+        for (int dex = 1; dex < names.length; dex++) {
+            tmp.append(names[dex]).append(" ");
+        }
+        return new String[] { names[0], tmp.toString() };
+    }
+
+    private void createContact(HashMap<Integer, String> contactMap) {
         // Creates a new Intent to insert a contact
         ArrayList<ContentValues> data = new ArrayList<>();
         ContentValues contactdata;
-        for (String key: contactMap.keySet()) {
-            Log.d(TAG, key + " and text to set: " + contactMap.get(key));
+        Log.d(TAG, "data size? " + contactMap.size());
+        String company = null;
+        Intent intent = new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI);
+        for (int key: contactMap.keySet()) {
             switch(key) {
-                case ContactsContract.Intents.Insert.NAME:
-                    contactdata = new ContentValues();
-                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
-                    contactdata.put(ContactsContract.CommonDataKinds.StructuredName.FULL_NAME_STYLE, contactMap.get(key));
-                    data.add(contactdata);
+                case ContactSpinnerAdapter.IND_NAME:
+                    //could not find the right combination of content value keys for the name
+                    intent.putExtra(ContactsContract.Intents.Insert.NAME, contactMap.get(key));
                     break;
-                case ContactsContract.Intents.Insert.PHONE:
+                case ContactSpinnerAdapter.IND_PHONE:
                     contactdata = new ContentValues();
-                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
-                    contactdata.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_HOME);
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_WORK);
                     contactdata.put(ContactsContract.CommonDataKinds.Phone.NUMBER, contactMap.get(key));
                     data.add(contactdata);
                     break;
-                case ContactsContract.Intents.Insert.EMAIL:
+                case ContactSpinnerAdapter.IND_EMAIL:
                     contactdata = new ContentValues();
                     contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
                     contactdata.put(ContactsContract.CommonDataKinds.Email.TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK);
                     contactdata.put(ContactsContract.CommonDataKinds.Email.ADDRESS, contactMap.get(key));
-                    data.add(contactdata);
+                    //Log.d(TAG, "add? " + data.add(contactdata));
                     break;
-                case ContactsContract.Intents.Insert.COMPANY:
-                    contactdata = new ContentValues();
-                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE);
-                    contactdata.put(ContactsContract.CommonDataKinds.Organization.COMPANY, contactMap.get(key));
-                    data.add(contactdata);
-                    break;
-                case ContactsContract.Intents.Insert.JOB_TITLE:
-                    contactdata = new ContentValues();
-                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE);
-                    contactdata.put(ContactsContract.CommonDataKinds.Organization.TITLE, contactMap.get(key));
-                    data.add(contactdata);
-                    break;
-                case ContactsContract.Intents.Insert.POSTAL:
+
+                case ContactSpinnerAdapter.IND_ADDR:
                     contactdata = new ContentValues();
                     contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.StructuredPostal.TYPE, ContactsContract.CommonDataKinds.StructuredPostal.TYPE_WORK);
                     contactdata.put(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS, contactMap.get(key));
                     data.add(contactdata);
                     break;
-                case ContactsContract.Intents.Insert.IM_HANDLE:
+
+                case ContactSpinnerAdapter.IND_COMPANY:
+                case ContactSpinnerAdapter.IND_TITLE:
+                    if (company != null) break;
                     contactdata = new ContentValues();
-                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE);
-                    contactdata.put(ContactsContract.CommonDataKinds.Im.PROTOCOL, contactMap.get(key));
+                    company = contactMap.get(ContactSpinnerAdapter.IND_COMPANY);
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE);
+                    if (!TextUtils.isEmpty(company)) {
+                        contactdata.put(ContactsContract.CommonDataKinds.Organization.COMPANY, company);
+                        Log.d(TAG, "adding company " + company);
+                    }
+                    company = contactMap.get(ContactSpinnerAdapter.IND_TITLE);
+                    if (!TextUtils.isEmpty(company)) {
+                        contactdata.put(ContactsContract.CommonDataKinds.Organization.TITLE, company);
+                        Log.d(TAG, "adding title " + company);
+                    }
                     data.add(contactdata);
                     break;
-                case ContactsContract.Intents.Insert.NOTES:
+                case ContactSpinnerAdapter.IND_IM:
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Im.TYPE, ContactsContract.CommonDataKinds.Im.TYPE_CUSTOM);
+                    contactdata.put(ContactsContract.CommonDataKinds.Im.LABEL, "Chat");
+                    contactdata.put(ContactsContract.CommonDataKinds.Im.DATA, contactMap.get(key));
+                    data.add(contactdata);
+                    break;
+                case ContactSpinnerAdapter.IND_NOTES:
                     contactdata = new ContentValues();
                     contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE);
                     contactdata.put(ContactsContract.CommonDataKinds.Note.NOTE, contactMap.get(key));
                     data.add(contactdata);
                     break;
-                case ContactsContract.Intents.Insert.SECONDARY_PHONE:
+                case ContactSpinnerAdapter.IND_PHONE2:
                     contactdata = new ContentValues();
-                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
                     contactdata.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_OTHER);
                     contactdata.put(ContactsContract.CommonDataKinds.Phone.NUMBER, contactMap.get(key));
                     data.add(contactdata);
                     break;
-                case ContactsContract.Intents.Insert.SECONDARY_EMAIL:
+                case ContactSpinnerAdapter.IND_EMAIL2:
                     contactdata = new ContentValues();
                     contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
                     contactdata.put(ContactsContract.CommonDataKinds.Email.TYPE, ContactsContract.CommonDataKinds.Email.TYPE_OTHER);
@@ -192,26 +220,14 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
                     break;
             }
         }
-
-        //Intent intent = new Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI);
-        /*Intent intent = new Intent(Intent.ACTION_EDIT);
-        intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);*/
-        // Creates a new Intent to insert a contact
-        //Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
-        final Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
-        // Sets the MIME type to match the Contacts Provider
-        intent.setType(Contacts.CONTENT_ITEM_TYPE);
+        //each content value fills a contacts contract row, the name is set as an extra
         intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, data);
         startActivity(intent);
 
-        startActivity(intent);
-        for (int id: editFields) {
-            ((EditText)findViewById(id)).setText("");
-        }
-        Toast.makeText(this, "Creating new contact: " + contactMap.get(ContactsContract.Intents.Insert.NAME), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Creating new contact: " + intent.getStringExtra(ContactsContract.Intents.Insert.NAME), Toast.LENGTH_LONG).show();
     }
 
-    void showDuplicatesDialog(ArrayList<Integer> duplicates, final HashMap<String, String> contactMap) {
+    void showDuplicatesDialog(ArrayList<Integer> duplicates) {
         StringBuilder message = new StringBuilder("Dropping duplicated values:\n");
         for (int id: duplicates) {
             message.append(((EditText) findViewById(id)).getText().toString()).append("\n");

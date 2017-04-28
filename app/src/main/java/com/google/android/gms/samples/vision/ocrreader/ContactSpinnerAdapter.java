@@ -22,6 +22,29 @@ import java.util.HashMap;
 
 public class ContactSpinnerAdapter implements SpinnerAdapter {
     public static final String TAG = ContactSpinnerAdapter.class.getSimpleName();
+    /**
+     * <item>Name</item>
+     <item>Phone</item>
+     <item>Email</item>
+     <item>Company</item>
+     <item>Job Title</item>
+     <item>Address</item>
+     <item>I.M.</item>
+     <item>Notes</item>
+     <item>Second Phone</item>
+     <item>Second Email</item>
+     */
+    static final int IND_NAME = 0;
+    static final int IND_PHONE = 1;
+    static final int IND_EMAIL = 2;
+    static final int IND_COMPANY = 3;
+    static final int IND_TITLE = 4;
+    static final int IND_ADDR = 5;
+    static final int IND_IM = 6;
+    static final int IND_NOTES = 7;
+    static final int IND_PHONE2 = 8;
+    static final int IND_EMAIL2 = 9;
+
     static String[] sValueList;
 
     public ContactSpinnerAdapter(Context ctx) {
@@ -92,22 +115,6 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
         return false;
     }
 
-    /**
-     * <item>Name</item>
-     <item>Phone</item>
-     <item>Email</item>
-     <item>Company</item>
-     <item>Job Title</item>
-     <item>Address</item>
-     <item>I.M.</item>
-     <item>Notes</item>
-     <item>Second Phone</item>
-     <item>Second Email</item>
-     */
-    static final int IND_PHONE1 = 1;
-    static final int IND_IM = 6;
-    static final int IND_EMAIL = 2;
-    static final int IND_ADDR = 5;
     public static int[] getIndices(String[] values) {
         Log.d(TAG, "get Indices");
         final ArrayList<Integer> selected = new ArrayList<>();
@@ -140,22 +147,22 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
                     }
                 }
             } else if (valueShown.contains("(") && valueShown.contains(")")) {
-                if (selected.contains(IND_PHONE1)) {
-                    selected.remove(selected.indexOf(IND_PHONE1));
-                    map.put(valueShown, IND_PHONE1);
+                if (selected.contains(IND_PHONE)) {
+                    selected.remove(selected.indexOf(IND_PHONE));
+                    map.put(valueShown, IND_PHONE);
                     break;
                 }
             } else if (Patterns.PHONE.matcher(valueShown).matches()) {
-                if (selected.contains(IND_PHONE1)) {
-                    selected.remove(selected.indexOf(IND_PHONE1));
-                    map.put(valueShown, IND_PHONE1);
+                if (selected.contains(IND_PHONE)) {
+                    selected.remove(selected.indexOf(IND_PHONE));
+                    map.put(valueShown, IND_PHONE);
                     break;
                 }
             } else if (valueShown.indexOf("-") > -1) {
                 dex = valueShown.indexOf("-");
-                if (valueShown.substring(dex+1).contains("-") && selected.contains(IND_PHONE1)) {
-                    selected.remove(selected.indexOf(IND_PHONE1));
-                    map.put(valueShown, IND_PHONE1);
+                if (valueShown.substring(dex+1).contains("-") && selected.contains(IND_PHONE)) {
+                    selected.remove(selected.indexOf(IND_PHONE));
+                    map.put(valueShown, IND_PHONE);
                     break;
                 }
             }else if (Character.isDigit(valueShown.charAt(0)) &&

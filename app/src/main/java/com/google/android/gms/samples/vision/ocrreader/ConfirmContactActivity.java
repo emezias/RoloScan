@@ -52,22 +52,28 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
         super.onResume();
         mContactFields = getIntent().getExtras().getStringArray(TAG);
         final int[] spinDexes = ContactSpinnerAdapter.getIndices(mContactFields);
-        int dex = 0;
+
         ContactSpinnerAdapter adapter;
         Spinner spinner;
         EditText text;
-        for (String s: mContactFields) {
+        String s;
+        for (int i = 0; i < mContactFields.length; i++) {
+            s = mContactFields[i];
             adapter = new ContactSpinnerAdapter(this);
-            text = (EditText) findViewById(editFields[dex]);
-            spinner = (Spinner)findViewById(spinners[dex]);
+            text = (EditText) findViewById(editFields[i]);
+            spinner = (Spinner)findViewById(spinners[i]);
             spinner.setAdapter(adapter);
-            //Log.d(TAG, "text to set: " + s);
             if (!TextUtils.isEmpty(s)) {
                 text.setText(s);
+                if (i < spinDexes.length && spinDexes[i] > 0) {
+                    spinner.setSelection(spinDexes[i]);
+                } else {
+                    spinner.setSelection(i);
+                }
+            } else {
+                spinner.setSelection(i);
             }
-            spinner.setSelection(spinDexes[dex]);
-            Log.d(TAG, "selected? " + spinner.getSelectedItemPosition());
-            spinner.setTag(dex++);
+            spinner.setTag(i);
             //important to set listener after
             spinner.setOnItemSelectedListener(this);
         } //end for loop
@@ -75,7 +81,6 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
 
     public void saveContact(View v) {
         Log.d(TAG, "To Do");
-        //createContactTest();
         ArrayList<Integer> duplicates = new ArrayList<>();
         HashMap<Integer, String> contactMap = new HashMap<>();
         String value;

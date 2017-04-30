@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="appName">RoloScan</string>
     <string name="retry">Retry</string>
     <string name="confirm">Create Contact</string>
     <string name="label">Scan A Contact</string>

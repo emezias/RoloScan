@@ -13,8 +13,8 @@
         android:allowBackup="true"
         android:fullBackupContent="false"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_save"
-        android:label="OcrReaderApp"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/appName"
         android:supportsRtl = "true"
         android:theme="@style/Theme.AppCompat" >
         <meta-data
@@ -25,7 +25,6 @@
             android:value="ocr" />
 
         <activity android:name="com.google.android.gms.samples.vision.ocrreader.StartActivity"
-            android:label="@string/label"
             android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

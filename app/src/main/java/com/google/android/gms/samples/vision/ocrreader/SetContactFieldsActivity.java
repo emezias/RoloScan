@@ -10,6 +10,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -86,8 +88,22 @@ public class SetContactFieldsActivity extends AppCompatActivity implements Adapt
         } //end for loop
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.save_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        saveContact(null);
+        return true;
+    }
+
     public void saveContact(View v) {
-        Log.d(TAG, "To Do");
+        Log.i(TAG, "open Contacts intent");
         ArrayList<Integer> duplicates = new ArrayList<>();
         HashMap<Integer, String> contactMap = new HashMap<>();
         String value;

@@ -3,6 +3,7 @@
     <string name="retry">Retry</string>
     <string name="confirm">Create Contact</string>
     <string name="label">Scan A Contact</string>
+    <string name="label2">Check Text and Save</string>
     <string name="preface">Take a photo of a business card \n or \n
     Choose a gallery photo</string>
     <string name="photo">Take a Photo</string>
@@ -10,7 +11,7 @@
     <string name="gallery">Choose an Image</string>
     <string name="permissionHelp">Permissions are needed to use this app</string>
     <string name="returnError">Please try again. The image is missing.</string>
-
+    <string name="save">Save</string>
     <string name="ocr_success">Text read successfully</string>
     <string name="ocr_failure">No text captured</string>
     <string name="ocr_error">"Error reading text: %1$s"</string>

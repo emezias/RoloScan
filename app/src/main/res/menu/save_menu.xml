@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <!-- Save appears as action button -->
+    <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/btn_save"
+        android:title="@string/save"
+        app:showAsAction="always"/>
+</menu>

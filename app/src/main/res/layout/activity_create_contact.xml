@@ -16,7 +16,7 @@
             android:id="@+id/cc_spinner1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:entries="@array/labels" />
         <ImageButton
             android:id="@+id/cc_btn1"
@@ -301,18 +301,6 @@
             android:layout_marginRight="36dp"
             android:tag="id/cc_btn10"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <ImageButton
-            android:id="@+id/cc_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@id/cc_edit10"
-            android:layout_centerHorizontal="true"
-            android:onClick="saveContact"
-            android:src="@drawable/btn_save"
-            android:background="@null"
-            android:text="Save" />
 
     </RelativeLayout>
 </ScrollView>

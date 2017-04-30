@@ -31,6 +31,7 @@ public class ConfirmTextDialog extends DialogFragment {
         final Bundle params = getArguments();
         ((TextView) v.findViewById(R.id.dlg_message)).setText(params.getString(StartActivity.TAG));
         v.findViewById(R.id.dlg_retry).setTag(params.getBoolean(StartActivity.TAG));
+        setCancelable(true);
         return v;
     }
 

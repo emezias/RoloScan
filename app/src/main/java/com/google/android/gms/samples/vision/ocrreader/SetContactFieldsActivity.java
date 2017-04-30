@@ -100,14 +100,14 @@ public class SetContactFieldsActivity extends AppCompatActivity implements Adapt
                     duplicates.add(editFields[dex]);
                 } else {
                     contactMap.put(spinnerDex, value);
-                    Log.d(TAG, "value " + value);
-                    Log.d(TAG, "key " + spinnerDex);
+                    //Log.d(TAG, "value " + value);
+                    //Log.d(TAG, "key " + spinnerDex);
                 }
             }
         }
         if (duplicates.isEmpty()) {
             createContact(contactMap);
-        } else showDuplicatesDialog(duplicates);
+        } else showDuplicatesDialog(duplicates, contactMap);
     }
 
     void createContactTest() {
@@ -228,7 +228,7 @@ public class SetContactFieldsActivity extends AppCompatActivity implements Adapt
         Toast.makeText(this, "Creating new contact: " + intent.getStringExtra(ContactsContract.Intents.Insert.NAME), Toast.LENGTH_LONG).show();
     }
 
-    void showDuplicatesDialog(ArrayList<Integer> duplicates) {
+    void showDuplicatesDialog(ArrayList<Integer> duplicates, final HashMap<Integer, String> contactMap) {
         StringBuilder message = new StringBuilder("Dropping duplicated values:\n");
         for (int id: duplicates) {
             message.append(((EditText) findViewById(id)).getText().toString()).append("\n");
@@ -238,7 +238,7 @@ public class SetContactFieldsActivity extends AppCompatActivity implements Adapt
                 .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //startGalleryChooser();
+                        createContact(contactMap);
                     }
                 })
                 .setNegativeButton(R.string.retry, new DialogInterface.OnClickListener() {

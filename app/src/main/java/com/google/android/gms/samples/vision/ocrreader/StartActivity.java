@@ -37,7 +37,6 @@ import java.util.ArrayList;
 public class StartActivity extends AppCompatActivity {
 
     public static final String TAG = StartActivity.class.getSimpleName();
-    public static final int GET_PHOTO = 111;
     private static final int GALLERY_REQUEST = 3;
     public static final int CAMERA_REQUEST = 9;
     public static final String FILE_NAME = "snapContact.jpg";
@@ -63,7 +62,7 @@ public class StartActivity extends AppCompatActivity {
                     //Log.d(TAG, "path? " + mPhotoUri.getPath());
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivityForResult(intent, GET_PHOTO);
+                    startActivityForResult(intent, CAMERA_REQUEST);
                 }
                 break;
             case R.id.start_gallery:
@@ -114,43 +113,48 @@ public class StartActivity extends AppCompatActivity {
             if (requestCode == GALLERY_REQUEST && data.getData() != null) {
                 mPhotoUri = data.getData();
             }
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
-                final Frame frame = (new Frame.Builder()).setBitmap(bitmap).build();
-                final TextRecognizer detector = new TextRecognizer.Builder(this).build();
-                final SparseArray<TextBlock> blocks = detector.detect(frame);
-
-                detector.release();
-                final int sz = getResources().getTextArray(R.array.labels).length;
-                mContactFields = new String[sz];
-                TextBlock blk;
-                StringBuilder bull = new StringBuilder();
-                if (blocks.size() > 0) {
-                    int contactDex = 0;
-                    for (int dex = 0; dex < blocks.size(); dex++) {
-                        blk = blocks.valueAt(dex);
-                        for (Text line: blk.getComponents()) {
-                            if (contactDex < sz) mContactFields[contactDex++] = line.getValue();
-                            else mContactFields[sz-1] = mContactFields[sz-1] + "\n" + line.getValue();
-                            bull.append(line.getValue() + "\n");
-                        }
-                    } //end for loop
-                    //boolean will determine if the app returns to the gallery or camera on retry
-                    showConfirmDialog(bull.toString(), requestCode == CAMERA_REQUEST);
-                    //Log.d(TAG, "any text? " + bull.toString());
-                    bull.setLength(0);
-                    bull.trimToSize();
-                    return;
-                } else {
-                    Log.w(TAG, "empty result");
-                    Toast.makeText(this, "No text was found", Toast.LENGTH_LONG).show();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            readPhoto(requestCode);
+            return;
         } //ok result can fall through to an error
         Toast.makeText(this, R.string.returnError, Toast.LENGTH_LONG).show();
+    }
 
+    void readPhoto(int requestCode) {
+        try {
+            final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
+            final Frame frame = (new Frame.Builder()).setBitmap(bitmap).build();
+            final TextRecognizer detector = new TextRecognizer.Builder(this).build();
+            final SparseArray<TextBlock> blocks = detector.detect(frame);
+
+            detector.release();
+            final int sz = getResources().getTextArray(R.array.labels).length;
+            mContactFields = new String[sz];
+            TextBlock blk;
+            StringBuilder bull = new StringBuilder();
+            if (blocks.size() > 0) {
+                int contactDex = 0;
+                for (int dex = 0; dex < blocks.size(); dex++) {
+                    blk = blocks.valueAt(dex);
+                    for (Text line: blk.getComponents()) {
+                        if (contactDex < sz) mContactFields[contactDex++] = line.getValue();
+                        else mContactFields[sz-1] = mContactFields[sz-1] + "\n" + line.getValue();
+                        bull.append(line.getValue() + "\n");
+                    }
+                } //end for loop
+                //boolean will determine if the app returns to the gallery or camera on retry
+                showConfirmDialog(bull.toString(), requestCode == CAMERA_REQUEST);
+                //Log.d(TAG, "any text? " + bull.toString());
+                bull.setLength(0);
+                bull.trimToSize();
+                return;
+            } else {
+                Log.w(TAG, "empty result");
+                Toast.makeText(this, "No text was found", Toast.LENGTH_LONG).show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, R.string.returnError, Toast.LENGTH_LONG).show();
+        }
     }
 
     void showConfirmDialog(String displayText, boolean mIsPhoto) {

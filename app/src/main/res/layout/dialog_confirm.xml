@@ -1,36 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.google.android.gms.samples.vision.ocrreader.StartActivity">
+    android:paddingBottom="@dimen/activity_vertical_margin">
 
     <TextView android:id="@+id/dlg_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:layout_centerHorizontal="true"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Snap a card" />
-
+    <View android:id="@+id/dlg_spacer"
+        android:layout_centerInParent="true"
+        android:layout_width="1dp"
+        android:layout_height="1dp"/>
     <ImageButton android:id="@+id/dlg_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RETRY"
-        android:src="@android:drawable/ic_menu_camera"
-        android:onClick="getPhoto"
+        android:text="Retry"
+        android:src="@drawable/btn_redo"
+        android:background="@drawable/btn_background_shape"
+        android:onClick="dlg_button"
+        android:layout_toLeftOf="@id/dlg_spacer"
+        android:layout_marginRight="16dp"
+        android:padding="8dp"
         android:layout_alignParentBottom="true" />
 
     <ImageButton android:id="@+id/dlg_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RETRY"
-        android:src="@android:drawable/ic_menu_edit"
-        android:onClick="getPhoto"
-        android:layout_centerInParent="true" />
+        android:text="OK"
+        android:src="@drawable/btn_done"
+        android:background="@drawable/btn_background_shape"
+        android:onClick="dlg_button"
+        android:layout_toRightOf="@id/dlg_spacer"
+        android:layout_marginLeft="16dp"
+        android:padding="8dp"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

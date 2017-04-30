@@ -143,7 +143,7 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
     }
 
     /**
-     * This method returns the spinner indices for the ConfirmContactActivity
+     * This method returns the spinner indices for the SetContactFieldsActivity
      * if there is no pattern match, contact activity has to handle the default -1 index value
      * @param values - the text blocks read in by the TextDetector
      * @return - the indices for the spinners that have a value

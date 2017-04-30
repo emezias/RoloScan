@@ -24,9 +24,9 @@ import java.util.HashMap;
  * Created by emezias on 4/20/17.
  */
 
-public class ConfirmContactActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class SetContactFieldsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    public static final String TAG = ConfirmContactActivity.class.getSimpleName();
+    public static final String TAG = SetContactFieldsActivity.class.getSimpleName();
     String[] mContactFields;
     int[] editFields = new int[] { R.id.cc_edit1, R.id.cc_edit2, R.id.cc_edit3, R.id.cc_edit4, R.id.cc_edit5,
             R.id.cc_edit6, R.id.cc_edit7, R.id.cc_edit8, R.id.cc_edit9, R.id.cc_edit10 };
@@ -58,12 +58,14 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
         ContactSpinnerAdapter adapter;
         Spinner spinner;
         EditText text;
+        ImageButton btn;
         String s;
         for (int i = 0; i < mContactFields.length; i++) {
             s = mContactFields[i];
             adapter = new ContactSpinnerAdapter(this);
             text = (EditText) findViewById(editFields[i]);
-            text.addTextChangedListener(new EditButton((ImageButton) findViewById(btn_fields[i]), text));
+            btn = (ImageButton) findViewById(btn_fields[i]);
+            text.addTextChangedListener(new EditButton(btn));
             spinner = (Spinner)findViewById(spinners[i]);
             spinner.setAdapter(adapter);
             if (!TextUtils.isEmpty(s)) {
@@ -75,8 +77,10 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
                 }
             } else {
                 spinner.setSelection(i);
+                btn.setEnabled(false);
             }
             spinner.setTag(i);
+            btn.setTag(i);
             //important to set listener after
             spinner.setOnItemSelectedListener(this);
         } //end for loop
@@ -130,9 +134,9 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
     /******** Click listeners *********/
 
     public void clearText(View btn) {
-
+        btn.setEnabled(false);
+        ((EditText)findViewById(editFields[(Integer) btn.getTag()])).getText().clear();
     }
-
 
     private void createContact(HashMap<Integer, String> contactMap) {
         // Creates a new Intent to insert a contact
@@ -229,7 +233,7 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
         for (int id: duplicates) {
             message.append(((EditText) findViewById(id)).getText().toString()).append("\n");
         }
-        (new AlertDialog.Builder(ConfirmContactActivity.this))
+        (new AlertDialog.Builder(SetContactFieldsActivity.this))
                 .setMessage(message.toString())
                 .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     @Override

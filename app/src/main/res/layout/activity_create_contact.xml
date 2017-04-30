@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.google.android.gms.samples.vision.ocrreader.ConfirmContactActivity">
+    tools:context="com.google.android.gms.samples.vision.ocrreader.SetContactFieldsActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -311,6 +311,7 @@
             android:layout_centerHorizontal="true"
             android:onClick="saveContact"
             android:src="@drawable/btn_save"
+            android:background="@null"
             android:text="Save" />
 
     </RelativeLayout>

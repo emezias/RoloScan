@@ -2,7 +2,6 @@ package com.google.android.gms.samples.vision.ocrreader;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
 /**
@@ -14,9 +13,8 @@ import android.widget.ImageButton;
 public class EditButton implements TextWatcher {
     private ImageButton mXButton;
 
-    public EditButton(ImageButton btn, EditText et) {
+    public EditButton(ImageButton btn) {
         mXButton = btn;
-        mXButton.setTag(et);
     }
 
     public void beforeTextChanged(CharSequence s, int start, int count, int after) { }

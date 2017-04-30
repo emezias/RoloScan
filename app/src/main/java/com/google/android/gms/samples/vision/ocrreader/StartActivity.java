@@ -110,7 +110,6 @@ public class StartActivity extends AppCompatActivity {
         Log.d(TAG, "on activity result? " + requestCode + " result " + resultCode + " data? " + (data != null));
         //Uri photoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", getCameraFile());
         if (resultCode == RESULT_OK) {
-            final Bitmap bitmap;
             if (requestCode == GALLERY_REQUEST && data.getData() != null) {
                 mPhotoUri = data.getData();
             }

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -31,7 +32,8 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
             R.id.cc_edit6, R.id.cc_edit7, R.id.cc_edit8, R.id.cc_edit9, R.id.cc_edit10 };
     int[] spinners = new int[] { R.id.cc_spinner1, R.id.cc_spinner2, R.id.cc_spinner3, R.id.cc_spinner4, R.id.cc_spinner5,
             R.id.cc_spinner6, R.id.cc_spinner7, R.id.cc_spinner8, R.id.cc_spinner9, R.id.cc_spinner10 };
-
+    int[] btn_fields = new int[] { R.id.cc_btn1, R.id.cc_btn2, R.id.cc_btn3, R.id.cc_btn4, R.id.cc_btn5,
+            R.id.cc_btn6, R.id.cc_btn7, R.id.cc_btn8, R.id.cc_btn9, R.id.cc_btn10 };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +63,7 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
             s = mContactFields[i];
             adapter = new ContactSpinnerAdapter(this);
             text = (EditText) findViewById(editFields[i]);
+            text.addTextChangedListener(new EditButton((ImageButton) findViewById(btn_fields[i]), text));
             spinner = (Spinner)findViewById(spinners[i]);
             spinner.setAdapter(adapter);
             if (!TextUtils.isEmpty(s)) {
@@ -124,23 +127,12 @@ public class ConfirmContactActivity extends AppCompatActivity implements Adapter
         startActivity(intent);
     }
 
-    /**
-     * Parse a line of text representing a name into the proper contact fields
-     * @param fullName one line of text encompassing all Contact Structured name fields
-     * @return Given name and Family name fields - as good as it gets
-     */
-    String[] splitName(String fullName) {
-        String[] names = fullName.split(" ");
-        switch (names.length) {
-            case 1: return new String[] { fullName, ""};
-            case 2: return names;
-        }
-        StringBuilder tmp = new StringBuilder(names[2].length());
-        for (int dex = 1; dex < names.length; dex++) {
-            tmp.append(names[dex]).append(" ");
-        }
-        return new String[] { names[0], tmp.toString() };
+    /******** Click listeners *********/
+
+    public void clearText(View btn) {
+
     }
+
 
     private void createContact(HashMap<Integer, String> contactMap) {
         // Creates a new Intent to insert a contact

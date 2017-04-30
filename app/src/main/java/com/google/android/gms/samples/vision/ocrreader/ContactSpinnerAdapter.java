@@ -1,7 +1,9 @@
 package com.google.android.gms.samples.vision.ocrreader;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.DataSetObserver;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -46,9 +48,32 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
     static final int IND_EMAIL2 = 9;
 
     static String[] sValueList;
+    static Drawable[] sIcons;
+    final static int[] spinicons = new int[] {
+            R.drawable.ic_account_circle_white_24dp,
+            R.drawable.ic_phone_white_24dp,
+            R.drawable.ic_mail_outline_white_24dp,
+            R.drawable.ic_business_white_24dp,
+            R.drawable.ic_title_white_24dp,
+            R.drawable.ic_location_on_white_24dp,
+            R.drawable.ic_chat_white_24dp,
+            R.drawable.ic_note_add_white_24dp,
+            R.drawable.ic_contact_phone_white_24dp,
+            R.drawable.ic_contact_mail_white_24dp
+    };
 
     public ContactSpinnerAdapter(Context ctx) {
-        if (sValueList == null) sValueList = ctx.getResources().getStringArray(R.array.labels);
+        if (sValueList == null) {
+            final Resources rsrcs = ctx.getResources();
+            final Resources.Theme thm = ctx.getTheme();
+            sValueList = rsrcs.getStringArray(R.array.labels);
+            final int sz = sValueList.length;
+            sIcons = new Drawable[sz];
+            for (int dex = 0; dex < sz; dex++) {
+                Log.d(TAG, "resources? " + spinicons[dex]);
+                sIcons[dex] = rsrcs.getDrawable(spinicons[dex], thm);
+            }
+        }
     }
 
     @Override
@@ -97,6 +122,8 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
             convertView.setTag(convertView.findViewById(R.id.labelText));
         }
         ((TextView)convertView.getTag()).setText(sValueList[position]);
+        ((TextView)convertView.getTag()).setCompoundDrawablesRelativeWithIntrinsicBounds(
+                null, null, sIcons[position], null);
         return convertView;
     }
 

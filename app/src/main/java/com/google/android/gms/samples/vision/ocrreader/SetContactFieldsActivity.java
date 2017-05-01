@@ -24,6 +24,9 @@ import java.util.HashMap;
 
 /**
  * Created by emezias on 4/20/17.
+ * This class takes the scanned text as an extra
+ * It displays each line of text in its own edit text
+ * The ContactSpinnerAdapter getIndices code applies logic to set the correct spinner value
  */
 
 public class SetContactFieldsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -36,6 +39,7 @@ public class SetContactFieldsActivity extends AppCompatActivity implements Adapt
             R.id.cc_spinner6, R.id.cc_spinner7, R.id.cc_spinner8, R.id.cc_spinner9, R.id.cc_spinner10 };
     int[] btn_fields = new int[] { R.id.cc_btn1, R.id.cc_btn2, R.id.cc_btn3, R.id.cc_btn4, R.id.cc_btn5,
             R.id.cc_btn6, R.id.cc_btn7, R.id.cc_btn8, R.id.cc_btn9, R.id.cc_btn10 };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +124,8 @@ public class SetContactFieldsActivity extends AppCompatActivity implements Adapt
         } else showDuplicatesDialog(duplicates, contactMap);
     }
 
+    //This demo code comes from the ContactsContract documentation
+    //https://developer.android.com/reference/android/provider/ContactsContract.Intents.Insert.html
     void createContactTest() {
         ArrayList<ContentValues> data = new ArrayList<ContentValues>();
 

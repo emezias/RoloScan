@@ -15,14 +15,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
 import android.widget.Toast;
-
-import com.google.android.gms.vision.Frame;
-import com.google.android.gms.vision.text.Text;
-import com.google.android.gms.vision.text.TextBlock;
-import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,9 +76,10 @@ public class StartActivity extends AppCompatActivity {
 
         switch (btn.getId()) {
             case R.id.dlg_confirm:
-                final Intent tnt = new Intent(getApplicationContext(), SetContactFieldsActivity.class);
+                //TODO
+                /*final Intent tnt = new Intent(getApplicationContext(), SetContactFieldsActivity.class);
                 tnt.putExtra(SetContactFieldsActivity.TAG, mContactFields);
-                startActivity(tnt);
+                startActivity(tnt);*/
                 break;
             case R.id.dlg_retry:
                 if ((Boolean) btn.getTag()) {
@@ -119,44 +114,28 @@ public class StartActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.returnError, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * This method is going to create the TextRecognizer
+     * It will put the scanned text output into a single string for the dialog
+     * It will have build the mContactFields array of Strings to pass to the next activity
+     * @param requestCode
+     */
     void readPhoto(int requestCode) {
         try {
             final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
-            final Frame frame = (new Frame.Builder()).setBitmap(bitmap).build();
-            final TextRecognizer detector = new TextRecognizer.Builder(this).build();
-            final SparseArray<TextBlock> blocks = detector.detect(frame);
-
-            detector.release();
-            final int sz = getResources().getTextArray(R.array.labels).length;
-            mContactFields = new String[sz];
-            TextBlock blk;
-            StringBuilder bull = new StringBuilder();
-            if (blocks.size() > 0) {
-                int contactDex = 0;
-                for (int dex = 0; dex < blocks.size(); dex++) {
-                    blk = blocks.valueAt(dex);
-                    for (Text line: blk.getComponents()) {
-                        if (contactDex < sz) mContactFields[contactDex++] = line.getValue();
-                        else mContactFields[sz-1] = mContactFields[sz-1] + "\n" + line.getValue();
-                        bull.append(line.getValue() + "\n");
-                    }
-                } //end for loop
-                //boolean will determine if the app returns to the gallery or camera on retry
-                showConfirmDialog(bull.toString(), requestCode == CAMERA_REQUEST);
-                //Log.d(TAG, "any text? " + bull.toString());
-                bull.setLength(0);
-                bull.trimToSize();
-                return;
-            } else {
-                Log.w(TAG, "empty result");
-                Toast.makeText(this, "No text was found", Toast.LENGTH_LONG).show();
-            }
+            //final Frame frame = TODO, create TextRecognizer
+            //TODO show confirm dialog with each line of text
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.returnError, Toast.LENGTH_LONG).show();
         }
     }
 
+    /**
+     * This dialog will show the scanned text and allow the user to proceed or retry the photo
+     * @param displayText
+     * @param mIsPhoto
+     */
     void showConfirmDialog(String displayText, boolean mIsPhoto) {
         mDialog = ConfirmTextDialog.newInstance(displayText, mIsPhoto);
         mDialog.show(getSupportFragmentManager(), "show");

@@ -1,4 +1,4 @@
-package com.google.android.gms.samples.vision.ocrreader;
+package com.mezcode.demo.roloscan.ocrreader;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;

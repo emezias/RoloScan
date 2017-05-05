@@ -1,4 +1,4 @@
-package com.google.android.gms.samples.vision.ocrreader;
+package com.mezcode.demo.roloscan.ocrreader;
 
 import android.Manifest;
 import android.app.Activity;
@@ -119,6 +119,12 @@ public class StartActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.returnError, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * This method is going to create the TextRecognizer
+     * It will put the scanned text output into a single string for the dialog
+     * It will have build the mContactFields array of Strings to pass to the next activity
+     * @param requestCode
+     */
     void readPhoto(int requestCode) {
         try {
             final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
@@ -157,6 +163,13 @@ public class StartActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This dialog will show the scanned text and allow the user to proceed or retry the photo
+     * Based on the user's manner of selecting the image that was scanned,
+     * the prompt for the user is tailored to go back to the Gallery or to go back to the photo
+     * @param displayText
+     * @param mIsPhoto
+     */
     void showConfirmDialog(String displayText, boolean mIsPhoto) {
         mDialog = ConfirmTextDialog.newInstance(displayText, mIsPhoto);
         mDialog.show(getSupportFragmentManager(), "show");

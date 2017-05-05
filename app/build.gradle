@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        applicationId "com.google.android.gms.samples.vision.barcodereader"
+        applicationId "com.mezcode.demo.roloscan"
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1

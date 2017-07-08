@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -108,7 +109,7 @@ public class StartActivity extends AppCompatActivity {
             if (requestCode == GALLERY_REQUEST && data.getData() != null) {
                 mPhotoUri = data.getData();
             }
-            readPhoto(requestCode);
+            new ReadPhotoTask().execute(requestCode);
             return;
         } //ok result can fall through to an error
         Toast.makeText(this, R.string.returnError, Toast.LENGTH_LONG).show();
@@ -203,5 +204,15 @@ public class StartActivity extends AppCompatActivity {
         }
         return false;
     }
-
+    
+    private class ReadPhotoTask extends AsyncTask<Integer, Void, Void> {
+        @Override
+        protected Void doInBackground(Integer... params) {
+            int requestCode = params[0];
+            readPhoto(requestCode);
+            
+            return null;
+        }
+    }
+    
 }

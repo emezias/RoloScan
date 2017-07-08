@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="appName">RoloScan</string>
+    <string name="appName">Scan2Contact</string>
     <string name="retry">Retry</string>
     <string name="confirm">Create Contact</string>
-    <string name="label">Scan A Contact</string>
+    <string name="label">Scan A Business Card</string>
     <string name="label2">Check Text and Save</string>
-    <string name="preface">Take a photo of a business card \n or \n
-    Choose a gallery photo</string>
+    <string name="preface">Take a photo of a business card \n OR \n
+    Choose a gallery photo </string>
     <string name="photo">Take a Photo</string>
     <string name="gallery_prompt">Select a Photo</string>
     <string name="gallery">Choose an Image</string>
@@ -16,7 +16,9 @@
     <string name="ocr_success">Text read successfully</string>
     <string name="ocr_failure">No text captured</string>
     <string name="ocr_error">"Error reading text: %1$s"</string>
-
+    <string name="no_text">No text was found</string>
+    <string name="scan2label">Scan2 Text</string>
+    <string name="copied">Text Copied</string>
     <string-array name="labels">
         <item>Name</item>
         <item>Phone</item>

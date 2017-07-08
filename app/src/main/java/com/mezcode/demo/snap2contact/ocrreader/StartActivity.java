@@ -1,7 +1,10 @@
-package com.mezcode.demo.roloscan.ocrreader;
+package com.mezcode.demo.snap2contact.ocrreader;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,9 +18,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.text.Text;
+import com.google.android.gms.vision.text.TextBlock;
+import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,10 +88,9 @@ public class StartActivity extends AppCompatActivity {
 
         switch (btn.getId()) {
             case R.id.dlg_confirm:
-                //TODO
-                /*final Intent tnt = new Intent(getApplicationContext(), SetContactFieldsActivity.class);
+                final Intent tnt = new Intent(getApplicationContext(), SetContactFieldsActivity.class);
                 tnt.putExtra(SetContactFieldsActivity.TAG, mContactFields);
-                startActivity(tnt);*/
+                startActivity(tnt);
                 break;
             case R.id.dlg_retry:
                 if ((Boolean) btn.getTag()) {
@@ -88,6 +98,13 @@ public class StartActivity extends AppCompatActivity {
                 } else {
                     getPhoto(findViewById(R.id.start_gallery));
                 }
+                break;
+            case R.id.dlg_clipboard:
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(getString(R.string.scan2label),
+                        ((TextView) mDialog.getView().findViewById(R.id.dlg_message)).getText());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show();
                 break;
         }
         mDialog.dismiss();
@@ -109,25 +126,8 @@ public class StartActivity extends AppCompatActivity {
             if (requestCode == GALLERY_REQUEST && data.getData() != null) {
                 mPhotoUri = data.getData();
             }
-            new ReadPhotoTask().execute(requestCode);
-            return;
-        } //ok result can fall through to an error
-        Toast.makeText(this, R.string.returnError, Toast.LENGTH_LONG).show();
-    }
-
-    /**
-     * This method is going to create the TextRecognizer
-     * It will put the scanned text output into a single string for the dialog
-     * It will have build the mContactFields array of Strings to pass to the next activity
-     * @param requestCode
-     */
-    void readPhoto(int requestCode) {
-        try {
-            final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
-            //final Frame frame = TODO, create TextRecognizer
-            //TODO show confirm dialog with each line of text
-        } catch (IOException e) {
-            e.printStackTrace();
+            new ReadPhotoTask(requestCode).execute();
+        } else {
             Toast.makeText(this, R.string.returnError, Toast.LENGTH_LONG).show();
         }
     }
@@ -204,14 +204,66 @@ public class StartActivity extends AppCompatActivity {
         }
         return false;
     }
-    
-    private class ReadPhotoTask extends AsyncTask<Integer, Void, Void> {
+
+    /**
+     * This class is to create the TextRecognizer, called by onActivityResult and passing the requestCode
+     * It will put the scanned text output into a single string for the confirm text dialog
+     * It builds the mContactFields array of Strings to pass to the next activity
+     */
+    private class ReadPhotoTask extends AsyncTask<Void, Void, String> {
+        int mCode;
+
+        public ReadPhotoTask(int code) {
+            mCode = code;
+        }
+
         @Override
-        protected Void doInBackground(Integer... params) {
-            int requestCode = params[0];
-            readPhoto(requestCode);
-            
+        protected String doInBackground(Void... params) {
+            try {
+                final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
+                final Frame frame = (new Frame.Builder()).setBitmap(bitmap).build();
+                final TextRecognizer detector = new TextRecognizer.Builder(StartActivity.this).build();
+                final SparseArray<TextBlock> blocks = detector.detect(frame);
+
+                detector.release();
+                final int sz = getResources().getTextArray(R.array.labels).length;
+                mContactFields = new String[sz];
+                TextBlock blk;
+                final StringBuilder bull = new StringBuilder();
+                if (blocks.size() > 0) {
+                    int contactDex = 0;
+                    for (int dex = 0; dex < blocks.size(); dex++) {
+                        blk = blocks.valueAt(dex);
+                        for (Text line: blk.getComponents()) {
+                            if (contactDex < sz) mContactFields[contactDex++] = line.getValue();
+                            else mContactFields[sz-1] = mContactFields[sz-1] + "\n" + line.getValue();
+                            bull.append(line.getValue() + "\n");
+                        }
+                    } //end for loop
+                    //boolean will determine if the app returns to the gallery or camera on retry
+
+                    //Log.d(TAG, "any text? " + bull.toString());
+                    return bull.toString();
+                } else {
+                    Log.w(TAG, "empty result");
+                    mCode = R.string.no_text;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                mCode = R.string.returnError;
+            }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (isCancelled()) return;
+            if (TextUtils.isEmpty(s)) {
+                Toast.makeText(getApplicationContext(), mCode, Toast.LENGTH_LONG).show();
+            } else {
+                showConfirmDialog(s, mCode == CAMERA_REQUEST);
+            }
         }
     }
     

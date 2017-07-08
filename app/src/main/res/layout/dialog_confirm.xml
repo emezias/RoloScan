@@ -11,32 +11,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="12dp"
-        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="18dp"
+        android:gravity="center_horizontal"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Snap a card" />
-    <ImageButton android:id="@+id/dlg_retry"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Retry"
-        android:src="@drawable/btn_redo"
-        android:background="@drawable/btn_background"
-        android:onClick="dlg_button"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="24dp"
-        android:padding="8dp"
-        android:layout_below="@id/dlg_message" />
+        android:layout_below="@id/dlg_message"  >
+        <ImageButton android:id="@+id/dlg_confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@android:string/ok"
+            android:src="@drawable/btn_done"
+            android:background="@drawable/btn_background"
+            android:onClick="dlg_button"
+            android:layout_margin="16dp"
+            android:padding="8dp" />
 
-    <ImageButton android:id="@+id/dlg_confirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OK"
-        android:src="@drawable/btn_done"
-        android:background="@drawable/btn_background"
-        android:onClick="dlg_button"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="24dp"
-        android:padding="8dp"
-        android:layout_below="@id/dlg_message" />
+        <ImageButton android:id="@+id/dlg_retry"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/retry"
+            android:src="@drawable/btn_redo"
+            android:background="@drawable/btn_background"
+            android:onClick="dlg_button"
+            android:layout_toRightOf="@id/dlg_confirm"
+            android:layout_margin="16dp"
+            android:padding="8dp"/>
+
+        <ImageButton android:id="@+id/dlg_clipboard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@android:string/copy"
+            android:src="@drawable/btn_clipboard"
+            android:background="@drawable/btn_background"
+            android:onClick="dlg_button"
+            android:layout_toLeftOf="@id/dlg_confirm"
+            android:layout_margin="16dp"
+            android:padding="8dp" />
+    </LinearLayout>
 
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.mezcode.demo.roloscan.ocrreader;
+package com.mezcode.demo.snap2contact.ocrreader;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;

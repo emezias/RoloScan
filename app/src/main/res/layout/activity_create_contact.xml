@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.google.android.gms.samples.vision.ocrreader.SetContactFieldsActivity">
+    tools:context="com.mezcode.demo.snap2contact.ocrreader.SetContactFieldsActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

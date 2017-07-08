@@ -62,16 +62,29 @@ public class SetContactFieldsActivity extends AppCompatActivity implements Adapt
         String s;
         for (int i = 0; i < mContactFields.length; i++) {
             s = mContactFields[i];
+            adapter = new ContactSpinnerAdapter(this);
             text = (EditText) findViewById(editFields[i]);
             btn = (ImageButton) findViewById(btn_fields[i]);
-            spinner = (Spinner) findViewById(spinDexes[i]);
-            //TODO set up each row, spinners, button and text
-
+            text.addTextChangedListener(new EditButton(btn));
+            spinner = (Spinner)findViewById(spinners[i]);
+            spinner.setAdapter(adapter);
+            if (!TextUtils.isEmpty(s)) {
+                text.setText(s);
+                if (i < spinDexes.length && spinDexes[i] > 0) {
+                    spinner.setSelection(spinDexes[i]);
+                } else {
+                    spinner.setSelection(i);
+                }
+            } else {
+                spinner.setSelection(i);
+                btn.setEnabled(false);
+            }
             spinner.setTag(i);
             btn.setTag(i);
-            //best to set listener after default selection
-            //spinner.setOnItemSelectedListener(this);
+            //important to set listener
+            spinner.setOnItemSelectedListener(this);
         } //end for loop
+
     }
 
     @Override

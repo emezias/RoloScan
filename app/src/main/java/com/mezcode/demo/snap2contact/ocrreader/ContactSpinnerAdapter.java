@@ -178,7 +178,7 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
                 }
                 break;
             }
-            if (valueShown.contains("(") && valueShown.contains(")")) {
+            if (android.util.Patterns.PHONE.matcher(valueShown).matches() || valueShown.contains("(") && valueShown.contains(")")) {
                 if (!selected.contains(IND_PHONE)) {
                     map.put(valueShown, IND_PHONE);
                     selected.add(IND_PHONE);

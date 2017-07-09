@@ -1,10 +1,12 @@
 package com.mezcode.demo.snap2contact.ocrreader;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -162,8 +164,9 @@ public class SetContactFieldsActivity extends AppCompatActivity implements Adapt
     private void createContact(HashMap<Integer, String> contactMap) {
         // Creates a new Intent to insert a contact
         ArrayList<ContentValues> data = new ArrayList<>();
-        ContentValues contactdata; //hint
-        //each content value fills a contacts contract row, the name is set as an extra
+        ContentValues contactdata;
+        Log.d(TAG, "data size? " + contactMap.size());
+        String company = null;
         Intent intent = new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI);
         for (int key: contactMap.keySet()) {
             switch(key) {
@@ -172,34 +175,76 @@ public class SetContactFieldsActivity extends AppCompatActivity implements Adapt
                     intent.putExtra(ContactsContract.Intents.Insert.NAME, contactMap.get(key));
                     break;
                 case ContactSpinnerAdapter.IND_PHONE:
-                    //TODO
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_WORK);
+                    contactdata.put(ContactsContract.CommonDataKinds.Phone.NUMBER, contactMap.get(key));
+                    data.add(contactdata);
                     break;
                 case ContactSpinnerAdapter.IND_EMAIL:
-                    //TODO
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Email.TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK);
+                    contactdata.put(ContactsContract.CommonDataKinds.Email.ADDRESS, contactMap.get(key));
+                    //Log.d(TAG, "add? " + data.add(contactdata));
                     break;
+
                 case ContactSpinnerAdapter.IND_ADDR:
-                    //TODO
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.StructuredPostal.TYPE, ContactsContract.CommonDataKinds.StructuredPostal.TYPE_WORK);
+                    contactdata.put(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS, contactMap.get(key));
+                    data.add(contactdata);
                     break;
+
                 case ContactSpinnerAdapter.IND_COMPANY:
-                    //TODO
                 case ContactSpinnerAdapter.IND_TITLE:
-                    //TODO
+                    if (company != null) break;
+                    contactdata = new ContentValues();
+                    company = contactMap.get(ContactSpinnerAdapter.IND_COMPANY);
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE);
+                    if (!TextUtils.isEmpty(company)) {
+                        contactdata.put(ContactsContract.CommonDataKinds.Organization.COMPANY, company);
+                        Log.d(TAG, "adding company " + company);
+                    }
+                    company = contactMap.get(ContactSpinnerAdapter.IND_TITLE);
+                    if (!TextUtils.isEmpty(company)) {
+                        contactdata.put(ContactsContract.CommonDataKinds.Organization.TITLE, company);
+                        Log.d(TAG, "adding title " + company);
+                    }
+                    data.add(contactdata);
                     break;
                 case ContactSpinnerAdapter.IND_IM:
-                    //TODO
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Im.TYPE, ContactsContract.CommonDataKinds.Im.TYPE_CUSTOM);
+                    contactdata.put(ContactsContract.CommonDataKinds.Im.LABEL, "Chat");
+                    contactdata.put(ContactsContract.CommonDataKinds.Im.DATA, contactMap.get(key));
+                    data.add(contactdata);
                     break;
                 case ContactSpinnerAdapter.IND_NOTES:
-                    //TODO
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Note.NOTE, contactMap.get(key));
+                    data.add(contactdata);
                     break;
                 case ContactSpinnerAdapter.IND_PHONE2:
-                    //TODO
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_OTHER);
+                    contactdata.put(ContactsContract.CommonDataKinds.Phone.NUMBER, contactMap.get(key));
+                    data.add(contactdata);
                     break;
                 case ContactSpinnerAdapter.IND_EMAIL2:
-                    //TODO
+                    contactdata = new ContentValues();
+                    contactdata.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+                    contactdata.put(ContactsContract.CommonDataKinds.Email.TYPE, ContactsContract.CommonDataKinds.Email.TYPE_OTHER);
+                    contactdata.put(ContactsContract.CommonDataKinds.Email.ADDRESS, contactMap.get(key));
+                    data.add(contactdata);
                     break;
             }
         }
-
+        //each content value fills a contacts contract row, the name is set as an extra
         intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, data);
         startActivity(intent);
 
@@ -207,11 +252,26 @@ public class SetContactFieldsActivity extends AppCompatActivity implements Adapt
     }
 
     void showDuplicatesDialog(ArrayList<Integer> duplicates, final HashMap<Integer, String> contactMap) {
-        //TODO
-        //Sample code uses Alert Dialog builder instead of Dialog Fragment
+        StringBuilder message = new StringBuilder("Dropping duplicated values:\n");
+        for (int id: duplicates) {
+            message.append(((EditText) findViewById(id)).getText().toString()).append("\n");
+        }
+        (new AlertDialog.Builder(SetContactFieldsActivity.this))
+                .setMessage(message.toString())
+                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        createContact(contactMap);
+                    }
+                })
+                .setNegativeButton(R.string.retry, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
     }
 
-    //The tag set on the spinner view here is used to set a contact field label when the user saves
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         final int previous = (int) parent.getTag();

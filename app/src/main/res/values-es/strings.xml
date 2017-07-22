@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preface">Tomar una Foto \n OR \n\n Elige una Foto</string>
+    <string name="confirm">Crear un contacto</string>
+    <string name="copied">Texto copiado</string>
+    <string name="gallery">Elige una foto</string>
+    <string name="gallery_prompt">Elige una foto</string>
+    <string name="label">Escanear una carta</string>
+    <string name="label2">Confirmar texto y guardar</string>
+    <string name="no_text">El texto no fue encontrado</string>
+    <string name="ocr_error">Error al leer el texto: %1$s</string>
+    <string name="ocr_failure">El texto no fue encontrado</string>
+    <string name="retry">Rever</string>
+    <string name="returnError">Inténtalo de nuevo</string>
+    <string name="save">Salvar</string>
+    <string name="permissionHelp">Se necesitan permisos para usar esta aplicación</string>
+    <string name="ocr_success">Exploración exitosa</string>
+    <string name="photo">Tomar una Foto</string>
+
+</resources>

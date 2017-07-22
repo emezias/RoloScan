@@ -40,4 +40,10 @@
         android:layout_centerHorizontal="true"
         android:layout_above="@id/start_gallery" />
 
+    <View android:id="@+id/snack_anchor"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"/>
+
 </RelativeLayout>

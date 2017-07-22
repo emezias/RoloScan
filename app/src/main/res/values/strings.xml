@@ -3,12 +3,11 @@
     <string name="appName" translatable="false">Scan2Contact</string>
     <string name="retry">Retry</string>
     <string name="confirm">Create Contact</string>
-    <string name="label">Scan A Business Card</string>
+    <string name="label">Scan</string>
     <string name="label2">Check Text and Save</string>
-    <string name="preface">Take a photo of a business card \n OR \n Choose a gallery photo </string>
+    <string name="preface">Take a photo (of a business card) \n OR \n Choose a photo of text </string>
     <string name="photo">Take a Photo</string>
     <string name="gallery_prompt">Select a Photo</string>
-    <string name="gallery">Choose an Image</string>
     <string name="permissionHelp">Permissions are needed to use this app</string>
     <string name="returnError">Please try again. The image is missing.</string>
     <string name="save">Save</string>
@@ -18,6 +17,7 @@
     <string name="no_text">No text was found</string>
     <string name="scan2label">Scan2 Text</string>
     <string name="copied">Text Copied</string>
+    <string name="load">Please Wait</string>
     <string-array name="labels">
         <item>Name</item>
         <item>Phone</item>

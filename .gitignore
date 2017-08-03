@@ -60,3 +60,10 @@ freeline_project_description.json
 .idea/
 app/src/main/gen/
 app/src/main/main.iml
+
+# Ignore Android Studio .iml files
+*.iml
+
+# Ignore local config properties
+local.properties
+

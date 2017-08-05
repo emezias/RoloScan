@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="appName" translatable="false">Scan2Contact</string>
+    <string name="appName" translatable="false">RoloScan</string>
     <string name="retry">Volver a Intentar</string>
     <string name="confirm">Crear Contacto</string>
     <string name="label">Escanear Tarjeta</string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="appName" translatable="false">Scan2Contact</string>
+    <string name="appName" translatable="false">RoloScan</string>
     <string name="retry">Retry</string>
     <string name="confirm">Create Contact</string>
     <string name="label">Scan</string>

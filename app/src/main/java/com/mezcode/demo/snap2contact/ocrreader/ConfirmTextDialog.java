@@ -2,6 +2,7 @@ package com.mezcode.demo.snap2contact.ocrreader;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,9 @@ public class ConfirmTextDialog extends DialogFragment {
         // Inflate the layout for this fragment, most of the layout is gone, to be set visible based on args
         final View v =  inflater.inflate(R.layout.dialog_confirm, container, false);
         final Bundle params = getArguments();
-        ((TextView) v.findViewById(R.id.dlg_message)).setText(params.getString(StartActivity.TAG));
+        final TextView tv = (TextView) v.findViewById(R.id.dlg_message);
+        tv.setText(params.getString(StartActivity.TAG));
+        tv.setMovementMethod(new ScrollingMovementMethod());
         v.findViewById(R.id.dlg_retry).setTag(params.getBoolean(TAG));
         setCancelable(true);
         return v;

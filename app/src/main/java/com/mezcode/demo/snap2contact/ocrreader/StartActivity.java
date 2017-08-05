@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -212,8 +213,13 @@ public class StartActivity extends AppCompatActivity {
      */
     private class ReadPhotoTask extends AsyncTask<Void, Void, String> {
         int mCode;
+        Snackbar mLoadingBar;
 
         public ReadPhotoTask(int code) {
+            mLoadingBar = Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor),
+                    R.string.load,
+                    Snackbar.LENGTH_INDEFINITE);
+            mLoadingBar.show();
             mCode = code;
         }
 
@@ -234,10 +240,11 @@ public class StartActivity extends AppCompatActivity {
                     int contactDex = 0;
                     for (int dex = 0; dex < blocks.size(); dex++) {
                         blk = blocks.valueAt(dex);
+                        bull.append(blk.getValue()).append("\n");
                         for (Text line: blk.getComponents()) {
                             if (contactDex < sz) mContactFields[contactDex++] = line.getValue();
                             else mContactFields[sz-1] = mContactFields[sz-1] + "\n" + line.getValue();
-                            bull.append(line.getValue() + "\n");
+                            //bull.append(line.getValue() + "\n");
                         }
                     } //end for loop
                     //boolean will determine if the app returns to the gallery or camera on retry
@@ -259,8 +266,9 @@ public class StartActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             if (isCancelled()) return;
+            mLoadingBar.dismiss();
             if (TextUtils.isEmpty(s)) {
-                Toast.makeText(getApplicationContext(), mCode, Toast.LENGTH_LONG).show();
+                Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor), mCode, Snackbar.LENGTH_SHORT).show();
             } else {
                 showConfirmDialog(s, mCode == CAMERA_REQUEST);
             }

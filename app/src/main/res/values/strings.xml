@@ -15,7 +15,7 @@
     <string name="ocr_failure">No text captured</string>
     <string name="ocr_error">Error reading text: %1$s</string>
     <string name="no_text">No text was found</string>
-    <string name="scan2label">Scan2 Text</string>
+    <string name="scan2label">Scan to Text</string>
     <string name="copied">Text Copied</string>
     <string name="load">Please Wait</string>
     <string-array name="labels">

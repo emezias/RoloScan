@@ -240,10 +240,11 @@ public class StartActivity extends AppCompatActivity {
                     int contactDex = 0;
                     for (int dex = 0; dex < blocks.size(); dex++) {
                         blk = blocks.valueAt(dex);
+                        bull.append(blk.getValue()).append("\n");
                         for (Text line: blk.getComponents()) {
                             if (contactDex < sz) mContactFields[contactDex++] = line.getValue();
                             else mContactFields[sz-1] = mContactFields[sz-1] + "\n" + line.getValue();
-                            bull.append(line.getValue() + "\n");
+                            //bull.append(line.getValue() + "\n");
                         }
                     } //end for loop
                     //boolean will determine if the app returns to the gallery or camera on retry

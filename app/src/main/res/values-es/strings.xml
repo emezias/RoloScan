@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="preface">Tomar una Foto \n OR \n\n Elige una Foto</string>
-    <string name="confirm">Crear un contacto</string>
-    <string name="copied">Texto copiado</string>
-    <string name="gallery">Elige una foto</string>
-    <string name="gallery_prompt">Elige una foto</string>
-    <string name="label">Escanear una carta</string>
-    <string name="label2">Confirmar texto y guardar</string>
-    <string name="no_text">El texto no fue encontrado</string>
-    <string name="ocr_error">Error al leer el texto: %1$s</string>
-    <string name="ocr_failure">El texto no fue encontrado</string>
-    <string name="retry">Rever</string>
-    <string name="returnError">Inténtalo de nuevo</string>
-    <string name="save">Salvar</string>
-    <string name="permissionHelp">Se necesitan permisos para usar esta aplicación</string>
-    <string name="ocr_success">Exploración exitosa</string>
-    <string name="photo">Tomar una Foto</string>
+    <string name="appName" translatable="false">Scan2Contact</string>
+    <string name="retry">Volver a Intentar</string>
+    <string name="confirm">Crear Contacto</string>
+    <string name="label">Escanear Tarjeta</string>
+    <string name="label2">Revisar Texto y Guardar</string>
+    <string name="preface">Tomar Foto de Tarjeta \n ó \n Elegir Foto de Galeria</string>
+    <string name="photo">Tomar Foto</string>
+    <string name="gallery_prompt">Seleccionar Foto</string>
+    <string name="gallery">Elegir Foto</string>
+    <string name="permissionHelp">Se Necesitan Permisos para Usar Esta Aplicacion</string>
+    <string name="returnError">Porfavor Intente Nuevamente. No se encuentra la foto</string>
+    <string name="save">Guardar</string>
+    <string name="ocr_success">Escaneo Exitoso</string>
+    <string name="ocr_failure">No Se Capturo Texto</string>
+    <string name="ocr_error">Error Leyendo Texto: %1$s</string>
+    <string name="no_text">No se Encontro Texto</string>
+    <string name="scan2label">Scan2 Text</string>
+    <string name="copied">Texto Copiado</string>
+    <string-array name="labels">
+        <item>Nombre</item>
+        <item>Telefono</item>
+        <item>Email</item>
+        <item>Compañia</item>
+        <item>Titulo</item>
+        <item>Direccion</item>
+        <item>I.M.</item>
+        <item>Notas</item>
+        <item>Telefono Secundaria</item>
+        <item>Email Secundario</item>
+    </string-array>
 
 </resources>

@@ -26,6 +26,14 @@ public class ConfirmTextDialog extends DialogFragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Do not create a new Fragment when the Activity is re-created such as orientation changes.
+        setRetainInstance(true);
+        setStyle(DialogFragment.STYLE_NORMAL, getTheme());
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment, most of the layout is gone, to be set visible based on args
         final View v =  inflater.inflate(R.layout.dialog_confirm, container, false);

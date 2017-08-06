@@ -16,51 +16,59 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Snap a card" />
 
-    <LinearLayout android:id="@+id/dlg_buttons"
+    <RelativeLayout android:id="@+id/dlg_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:minHeight="16dp" >
+        android:layout_gravity="bottom"
+        android:minHeight="18dp">
 
-        <ImageButton android:id="@+id/dlg_retry"
+        <View android:id="@+id/center"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/btn_redo"
-            android:background="@drawable/btn_background"
-            android:onClick="dlg_button"
-            android:layout_margin="8dp"
-            android:padding="6dp"/>
+            android:layout_height="1dp"
+            android:layout_centerInParent="true"/>
 
         <ImageButton android:id="@+id/dlg_confirm"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_toLeftOf="@id/center"
             android:src="@drawable/btn_done"
+            android:contentDescription="@string/confirm"
             android:background="@drawable/btn_background"
             android:onClick="dlg_button"
-            android:layout_margin="8dp"
-            android:padding="6dp" />
+            android:layout_margin="12dp"
+            android:padding="8dp" />
+
+        <ImageButton android:id="@+id/dlg_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/dlg_confirm"
+            android:src="@drawable/btn_redo"
+            android:contentDescription="@android:string/cancel"
+            android:background="@drawable/btn_background"
+            android:onClick="dlg_button"
+            android:layout_margin="12dp"
+            android:padding="8dp"/>
 
         <ImageButton android:id="@+id/dlg_share"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_toRightOf="@id/center"
             android:src="@drawable/btn_share"
+            android:contentDescription="@string/share"
             android:background="@drawable/btn_background"
             android:onClick="dlg_button"
-            android:layout_margin="8dp"
-            android:padding="6dp" />
+            android:layout_margin="12dp"
+            android:padding="8dp" />
 
         <ImageButton android:id="@+id/dlg_clipboard"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_toRightOf="@id/dlg_share"
             android:src="@drawable/btn_clipboard"
+            android:contentDescription="@android:string/copy"
             android:background="@drawable/btn_background"
             android:onClick="dlg_button"
-            android:layout_margin="8dp"
-            android:padding="6dp" />
-    </LinearLayout>
+            android:layout_margin="12dp"
+            android:padding="8dp" />
+    </RelativeLayout>
 </LinearLayout>

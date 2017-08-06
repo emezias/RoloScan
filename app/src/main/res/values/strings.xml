@@ -18,6 +18,7 @@
     <string name="scan2label">Scan to Text</string>
     <string name="copied">Text Copied</string>
     <string name="load">Please Wait</string>
+    <string name="share">Share Text</string>
     <string-array name="labels">
         <item>Name</item>
         <item>Phone</item>

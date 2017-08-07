@@ -56,7 +56,6 @@ freeline.py
 freeline/
 freeline_project_description.json
 
-.gitignore
 .idea/
 app/src/main/gen/
 app/src/main/main.iml

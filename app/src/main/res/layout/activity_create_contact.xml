@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mezcode.demo.snap2contact.ocrreader.SetContactFieldsActivity">
+    tools:context="com.mezcode.demo.roloscan.ocrreader.SetContactFieldsActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,6 +28,7 @@
             android:padding="4dp"
             android:background="@drawable/btn_background"
             android:onClick="clearText"
+            android:contentDescription="@android:string/cut"
             android:src="@drawable/btn_close"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -58,6 +59,7 @@
             android:padding="4dp"
             android:background="@drawable/btn_background"
             android:onClick="clearText"
+            android:contentDescription="@android:string/cut"
             android:src="@drawable/btn_close"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -88,6 +90,7 @@
             android:padding="4dp"
             android:background="@drawable/btn_background"
             android:onClick="clearText"
+            android:contentDescription="@android:string/cut"
             android:src="@drawable/btn_close"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -118,6 +121,7 @@
             android:padding="4dp"
             android:background="@drawable/btn_background"
             android:onClick="clearText"
+            android:contentDescription="@android:string/cut"
             android:src="@drawable/btn_close"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -148,6 +152,7 @@
             android:padding="4dp"
             android:background="@drawable/btn_background"
             android:onClick="clearText"
+            android:contentDescription="@android:string/cut"
             android:src="@drawable/btn_close"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -178,6 +183,7 @@
             android:padding="4dp"
             android:background="@drawable/btn_background"
             android:onClick="clearText"
+            android:contentDescription="@android:string/cut"
             android:src="@drawable/btn_close"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -208,6 +214,7 @@
             android:padding="4dp"
             android:background="@drawable/btn_background"
             android:onClick="clearText"
+            android:contentDescription="@android:string/cut"
             android:src="@drawable/btn_close"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -238,6 +245,7 @@
             android:padding="4dp"
             android:background="@drawable/btn_background"
             android:onClick="clearText"
+            android:contentDescription="@android:string/cut"
             android:src="@drawable/btn_close"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -268,6 +276,7 @@
             android:padding="4dp"
             android:background="@drawable/btn_background"
             android:onClick="clearText"
+            android:contentDescription="@android:string/cut"
             android:src="@drawable/btn_close"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -298,6 +307,7 @@
             android:padding="4dp"
             android:background="@drawable/btn_background"
             android:onClick="clearText"
+            android:contentDescription="@android:string/cut"
             android:src="@drawable/btn_close"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 

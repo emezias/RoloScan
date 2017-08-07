@@ -1,4 +1,4 @@
-package com.mezcode.demo.snap2contact.ocrreader;
+package com.mezcode.demo.roloscan.ocrreader;
 
 import android.Manifest;
 import android.app.Activity;
@@ -46,7 +46,8 @@ public class StartActivity extends AppCompatActivity {
     public static final String TAG = StartActivity.class.getSimpleName();
     private static final int GALLERY_REQUEST = 3;
     public static final int CAMERA_REQUEST = 9;
-    public static final String FILE_NAME = "snapContact.jpg";
+    public static final String FILE_NAME = "RoloScan.jpg";
+    public static final String MIME_TYPE = "text/plain";
     Uri mPhotoUri;
     String[] mContactFields;
     ConfirmTextDialog mDialog;
@@ -55,7 +56,6 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        getSupportActionBar().setTitle(R.string.label);
     }
 
     public void getPhoto(View v) {
@@ -106,6 +106,14 @@ public class StartActivity extends AppCompatActivity {
                         ((TextView) mDialog.getView().findViewById(R.id.dlg_message)).getText());
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.dlg_share:
+                final Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT,
+                        ((TextView) mDialog.getView().findViewById(R.id.dlg_message)).getText());
+                sendIntent.setType(MIME_TYPE);
+                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.scan2label)));
                 break;
         }
         mDialog.dismiss();
@@ -197,11 +205,7 @@ public class StartActivity extends AppCompatActivity {
     public static boolean permissionGranted(
             int requestCode, int permissionCode, int[] grantResults) {
         if (requestCode == permissionCode) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            } else {
-                return false;
-            }
+            return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
         }
         return false;
     }

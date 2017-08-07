@@ -16,7 +16,7 @@
     <string name="ocr_failure">No Se Capturo Texto</string>
     <string name="ocr_error">Error Leyendo Texto: %1$s</string>
     <string name="no_text">No se Encontro Texto</string>
-    <string name="scan2label">Scan2 Text</string>
+    <string name="scan2label">Escaneo</string>
     <string name="copied">Texto Copiado</string>
     <string-array name="labels">
         <item>Nombre</item>

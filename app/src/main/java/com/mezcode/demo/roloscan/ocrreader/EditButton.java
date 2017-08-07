@@ -1,4 +1,4 @@
-package com.mezcode.demo.snap2contact.ocrreader;
+package com.mezcode.demo.roloscan.ocrreader;
 
 import android.text.Editable;
 import android.text.TextWatcher;

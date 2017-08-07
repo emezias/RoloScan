@@ -1,4 +1,4 @@
-package com.mezcode.demo.snap2contact.ocrreader;
+package com.mezcode.demo.roloscan.ocrreader;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -23,6 +23,14 @@ public class ConfirmTextDialog extends DialogFragment {
         args.putString(StartActivity.TAG, diplayText);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Do not create a new Fragment when the Activity is re-created such as orientation changes.
+        setRetainInstance(true);
+        setStyle(DialogFragment.STYLE_NORMAL, getTheme());
     }
 
     @Override

@@ -1,60 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <LinearLayout android:id="@+id/dlg_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
         android:minHeight="16dp" >
-        <ImageButton android:id="@+id/dlg_confirm"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@android:string/ok"
-            android:src="@drawable/btn_done"
-            android:background="@drawable/btn_background"
-            android:onClick="dlg_button"
-            android:layout_margin="16dp"
-            android:padding="8dp" />
 
         <ImageButton android:id="@+id/dlg_retry"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/retry"
             android:src="@drawable/btn_redo"
+            android:contentDescription="@string/retry"
             android:background="@drawable/btn_background"
             android:onClick="dlg_button"
-            android:layout_toRightOf="@id/dlg_confirm"
-            android:layout_margin="16dp"
-            android:padding="8dp"/>
+            android:layout_margin="8dp"
+            android:padding="6dp"/>
+
+        <ImageButton android:id="@+id/dlg_confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/btn_done"
+            android:contentDescription="@string/confirm"
+            android:background="@drawable/btn_background"
+            android:onClick="dlg_button"
+            android:layout_margin="8dp"
+            android:padding="6dp" />
+
+        <ImageButton android:id="@+id/dlg_share"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/btn_share"
+            android:contentDescription="@string/share"
+            android:background="@drawable/btn_background"
+            android:onClick="dlg_button"
+            android:layout_margin="8dp"
+            android:padding="6dp" />
 
         <ImageButton android:id="@+id/dlg_clipboard"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@android:string/copy"
             android:src="@drawable/btn_clipboard"
+            android:contentDescription="@android:string/copy"
             android:background="@drawable/btn_background"
             android:onClick="dlg_button"
-            android:layout_toLeftOf="@id/dlg_confirm"
-            android:layout_margin="16dp"
-            android:padding="8dp" />
+            android:layout_margin="8dp"
+            android:padding="6dp" />
     </LinearLayout>
     <TextView android:id="@+id/dlg_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
-        android:layout_above="@+id/dlg_buttons"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="18dp"
+        android:layout_margin="8dp"
+        android:padding="8dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Snap a card" />
-
-</RelativeLayout>
+</LinearLayout>

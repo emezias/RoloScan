@@ -1,4 +1,4 @@
-package com.mezcode.demo.snap2contact.ocrreader;
+package com.mezcode.demo.roloscan.ocrreader;
 
 import android.Manifest;
 import android.app.Activity;
@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -45,7 +46,8 @@ public class StartActivity extends AppCompatActivity {
     public static final String TAG = StartActivity.class.getSimpleName();
     private static final int GALLERY_REQUEST = 3;
     public static final int CAMERA_REQUEST = 9;
-    public static final String FILE_NAME = "snapContact.jpg";
+    public static final String FILE_NAME = "RoloScan.jpg";
+    public static final String MIME_TYPE = "text/plain";
     Uri mPhotoUri;
     String[] mContactFields;
     ConfirmTextDialog mDialog;
@@ -54,7 +56,6 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        getSupportActionBar().setTitle(R.string.label);
     }
 
     public void getPhoto(View v) {
@@ -105,6 +106,14 @@ public class StartActivity extends AppCompatActivity {
                         ((TextView) mDialog.getView().findViewById(R.id.dlg_message)).getText());
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.dlg_share:
+                final Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT,
+                        ((TextView) mDialog.getView().findViewById(R.id.dlg_message)).getText());
+                sendIntent.setType(MIME_TYPE);
+                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.scan2label)));
                 break;
         }
         mDialog.dismiss();
@@ -196,11 +205,7 @@ public class StartActivity extends AppCompatActivity {
     public static boolean permissionGranted(
             int requestCode, int permissionCode, int[] grantResults) {
         if (requestCode == permissionCode) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            } else {
-                return false;
-            }
+            return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
         }
         return false;
     }
@@ -212,8 +217,13 @@ public class StartActivity extends AppCompatActivity {
      */
     private class ReadPhotoTask extends AsyncTask<Void, Void, String> {
         int mCode;
+        Snackbar mLoadingBar;
 
         public ReadPhotoTask(int code) {
+            mLoadingBar = Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor),
+                    R.string.load,
+                    Snackbar.LENGTH_INDEFINITE);
+            mLoadingBar.show();
             mCode = code;
         }
 
@@ -234,10 +244,11 @@ public class StartActivity extends AppCompatActivity {
                     int contactDex = 0;
                     for (int dex = 0; dex < blocks.size(); dex++) {
                         blk = blocks.valueAt(dex);
+                        bull.append(blk.getValue()).append("\n");
                         for (Text line: blk.getComponents()) {
                             if (contactDex < sz) mContactFields[contactDex++] = line.getValue();
                             else mContactFields[sz-1] = mContactFields[sz-1] + "\n" + line.getValue();
-                            bull.append(line.getValue() + "\n");
+                            //bull.append(line.getValue() + "\n");
                         }
                     } //end for loop
                     //boolean will determine if the app returns to the gallery or camera on retry
@@ -259,8 +270,9 @@ public class StartActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             if (isCancelled()) return;
+            mLoadingBar.dismiss();
             if (TextUtils.isEmpty(s)) {
-                Toast.makeText(getApplicationContext(), mCode, Toast.LENGTH_LONG).show();
+                Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor), mCode, Snackbar.LENGTH_SHORT).show();
             } else {
                 showConfirmDialog(s, mCode == CAMERA_REQUEST);
             }

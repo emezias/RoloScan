@@ -7,7 +7,10 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,6 +35,7 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -44,13 +48,83 @@ import java.util.ArrayList;
 public class StartActivity extends AppCompatActivity {
 
     public static final String TAG = StartActivity.class.getSimpleName();
-    private static final int GALLERY_REQUEST = 3;
     public static final int CAMERA_REQUEST = 9;
     public static final String FILE_NAME = "RoloScan.jpg";
     public static final String MIME_TYPE = "text/plain";
+    private static final int GALLERY_REQUEST = 3;
     Uri mPhotoUri;
     String[] mContactFields;
     ConfirmTextDialog mDialog;
+
+    //Permissions logic modeled on cloud vision, but nested
+    //https://github.com/GoogleCloudPlatform/cloud-vision/blob/master/android/CloudVision/
+    public static boolean requestPermission(
+            Activity activity, int requestCode, String... permissions) {
+        boolean granted = true;
+        ArrayList<String> permissionsNeeded = new ArrayList<>();
+
+        for (String s : permissions) {
+            int permissionCheck = ContextCompat.checkSelfPermission(activity, s);
+            boolean hasPermission = (permissionCheck == PackageManager.PERMISSION_GRANTED);
+            granted &= hasPermission;
+            if (!hasPermission) {
+                permissionsNeeded.add(s);
+            }
+        }
+
+        if (granted) {
+            return true;
+        } else {
+            ActivityCompat.requestPermissions(activity,
+                    permissionsNeeded.toArray(new String[permissionsNeeded.size()]),
+                    requestCode);
+            return false;
+        }
+    }
+
+    public static boolean permissionGranted(
+            int requestCode, int permissionCode, int[] grantResults) {
+        if (requestCode == permissionCode) {
+            return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+        }
+        return false;
+    }
+
+    //https://teamtreehouse.com/community/how-to-rotate-images-to-the-correct-orientation-portrait-by-editing-the-exif-data-once-photo-has-been-taken
+    public static Bitmap rotateImageIfRequired(Bitmap img, Context context, Uri selectedImage) throws IOException {
+
+        if (selectedImage.getScheme().equals("content")) {
+            String[] projection = { MediaStore.Images.ImageColumns.ORIENTATION };
+            Cursor c = context.getContentResolver().query(selectedImage, projection, null, null, null);
+            if (c.moveToFirst()) {
+                final int rotation = c.getInt(0);
+                c.close();
+                return rotateImage(img, rotation);
+            }
+            return img;
+        } else {
+            ExifInterface ei = new ExifInterface(selectedImage.getPath());
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            Log.d(TAG, "Orientation is: " + orientation);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    return rotateImage(img, 90);
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    return rotateImage(img, 180);
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    return rotateImage(img, 270);
+                default:
+                    return img;
+            }
+        }
+    }
+
+    private static Bitmap rotateImage(Bitmap img, int degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        return Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,7 +225,6 @@ public class StartActivity extends AppCompatActivity {
         mDialog.show(getSupportFragmentManager(), "show");
     }
 
-
     @Override
     public void onRequestPermissionsResult(
             int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -175,41 +248,6 @@ public class StartActivity extends AppCompatActivity {
 
     }
 
-    //Permissions logic modeled on cloud vision, but nested
-    //https://github.com/GoogleCloudPlatform/cloud-vision/blob/master/android/CloudVision/
-    public static boolean requestPermission(
-            Activity activity, int requestCode, String... permissions) {
-        boolean granted = true;
-        ArrayList<String> permissionsNeeded = new ArrayList<>();
-
-        for (String s : permissions) {
-            int permissionCheck = ContextCompat.checkSelfPermission(activity, s);
-            boolean hasPermission = (permissionCheck == PackageManager.PERMISSION_GRANTED);
-            granted &= hasPermission;
-            if (!hasPermission) {
-                permissionsNeeded.add(s);
-            }
-        }
-
-        if (granted) {
-            return true;
-        } else {
-            ActivityCompat.requestPermissions(activity,
-                    permissionsNeeded.toArray(new String[permissionsNeeded.size()]),
-                    requestCode);
-            return false;
-        }
-    }
-
-
-    public static boolean permissionGranted(
-            int requestCode, int permissionCode, int[] grantResults) {
-        if (requestCode == permissionCode) {
-            return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
-        }
-        return false;
-    }
-
     /**
      * This class is to create the TextRecognizer, called by onActivityResult and passing the requestCode
      * It will put the scanned text output into a single string for the confirm text dialog
@@ -227,10 +265,28 @@ public class StartActivity extends AppCompatActivity {
             mCode = code;
         }
 
+        public String getRealPathFromURI(Context context, Uri contentUri) {
+            Cursor cursor = null;
+            try {
+                String[] proj = { MediaStore.Images.Media.DATA };
+                cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+                return cursor.getString(column_index);
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        }
+
         @Override
         protected String doInBackground(Void... params) {
             try {
-                final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
+                //final String filename = getRealPathFromURI(StartActivity.this, mPhotoUri);
+                bitmap = rotateImageIfRequired(bitmap, StartActivity.this, mPhotoUri);
+
                 final Frame frame = (new Frame.Builder()).setBitmap(bitmap).build();
                 final TextRecognizer detector = new TextRecognizer.Builder(StartActivity.this).build();
                 final SparseArray<TextBlock> blocks = detector.detect(frame);
@@ -259,9 +315,10 @@ public class StartActivity extends AppCompatActivity {
                     Log.w(TAG, "empty result");
                     mCode = R.string.no_text;
                 }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-                mCode = R.string.returnError;
             }
             return null;
         }
@@ -278,5 +335,5 @@ public class StartActivity extends AppCompatActivity {
             }
         }
     }
-    
+
 }

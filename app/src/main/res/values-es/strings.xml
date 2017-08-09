@@ -18,6 +18,7 @@
     <string name="no_text">No se Encontro Texto</string>
     <string name="scan2label">Escaneo</string>
     <string name="copied">Texto Copiado</string>
+    <string name="share">Compartir Texto</string>
     <string-array name="labels">
         <item>Nombre</item>
         <item>Telefono</item>

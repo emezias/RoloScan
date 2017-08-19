@@ -106,22 +106,20 @@ public class StartActivity extends AppCompatActivity {
                 c.close();
                 return rotateImage(img, rotation);
             }
-            return img;
-        } else {
-            ExifInterface ei = new ExifInterface(selectedImage.getPath());
-            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            Log.d(TAG, "Orientation is: " + orientation);
+        }
+        ExifInterface ei = new ExifInterface(getRealPathFromURI(context, selectedImage));
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        Log.d(TAG, "Orientation is: " + orientation);
 
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    return rotateImage(img, 90);
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    return rotateImage(img, 180);
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    return rotateImage(img, 270);
-                default:
-                    return img;
-            }
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return rotateImage(img, 90);
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return rotateImage(img, 180);
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return rotateImage(img, 270);
+            default:
+                return img;
         }
     }
 
@@ -129,6 +127,28 @@ public class StartActivity extends AppCompatActivity {
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
         return Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+    }
+
+    public static String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            if (cursor.getCount() > 0 && cursor.getColumnCount() > 0) {
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+                return cursor.getString(column_index);
+            } else {
+                final String path = contentUri.getPath();
+                if ((new File(path)).exists()) return contentUri.getPath();
+                else return (new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), FILE_NAME)).getPath();
+            }
+
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 
     @Override
@@ -308,7 +328,7 @@ public class StartActivity extends AppCompatActivity {
                         }
                     } //end for loop
                     //boolean will determine if the app returns to the gallery or camera on retry
-
+                    mCode = R.string.ocr_success;
                     //Log.d(TAG, "any text? " + bull.toString());
                     return bull.toString();
                 } else {

@@ -6,41 +6,61 @@
     android:padding="16dp"
     tools:context="com.mezcode.demo.roloscan.ocrreader.StartActivity">
 
-    <TextView android:id="@+id/start_message"
+    <TextView android:id="@+id/start_message2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_centerInParent="true"
+        android:layout_margin="8dp"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/preface" />
-
-    <ImageButton android:id="@+id/start_gallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:padding="12dp"
-        android:contentDescription="@string/gallery"
-        android:src="@drawable/btn_gallery"
-        android:background="@drawable/btn_background"
-        android:onClick="getPhoto"
-        android:layout_centerInParent="true" />
+        android:text="@string/startText2"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageButton android:id="@+id/start_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:padding="12dp"
-        android:contentDescription="@string/photo"
-        android:src="@drawable/btn_photo"
-        android:background="@drawable/btn_background"
-        android:onClick="getPhoto"
+        android:layout_above="@id/start_message2"
         android:layout_centerHorizontal="true"
-        android:layout_above="@id/start_gallery" />
+        android:layout_margin="16dp"
+        android:background="@drawable/btn_background"
+        android:contentDescription="@string/photo"
+        android:onClick="getPhoto"
+        android:padding="12dp"
+        android:src="@drawable/btn_photo" />
+
+    <TextView android:id="@+id/start_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/start_photo"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:text="@string/startText1"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ImageButton android:id="@+id/start_gallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_message2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/btn_background"
+        android:contentDescription="@string/gallery_prompt"
+        android:onClick="getPhoto"
+        android:padding="12dp"
+        android:src="@drawable/btn_gallery" />
+
+    <TextView android:id="@+id/start_message3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_gallery"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:text="@string/startText3"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <View android:id="@+id/snack_anchor"
         android:layout_width="1dp"
         android:layout_height="1dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>

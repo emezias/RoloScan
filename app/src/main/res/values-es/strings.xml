@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="appName" translatable="false">RoloScan</string>
     <string name="retry">Volver a Intentar</string>
     <string name="confirm">Crear Contacto</string>
     <string name="label">Escanear Tarjeta</string>
     <string name="label2">Revisar Texto y Guardar</string>
-    <string name="preface">Tomar Foto de Tarjeta \n ó \n Elegir Foto de Galeria</string>
     <string name="photo">Tomar Foto</string>
     <string name="gallery_prompt">Seleccionar Foto</string>
-    <string name="gallery">Elegir Foto</string>
     <string name="permissionHelp">Se Necesitan Permisos para Usar Esta Aplicacion</string>
     <string name="returnError">Porfavor Intente Nuevamente. No se encuentra la foto</string>
     <string name="save">Guardar</string>
@@ -31,5 +28,9 @@
         <item>Telefono Secundaria</item>
         <item>Email Secundario</item>
     </string-array>
+    <string name="startText1">Tomar Foto de Tarjeta</string>
+    <string name="startText2">ó</string>
+    <string name="startText3">Elegir Foto de Galeria</string>
+    <string name="load">Leyendo Texto</string>
 
 </resources>

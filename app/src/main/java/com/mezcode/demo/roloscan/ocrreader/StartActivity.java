@@ -9,7 +9,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -25,7 +28,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -96,7 +101,7 @@ public class StartActivity extends AppCompatActivity {
         if (selectedImage.getScheme().equals("content")) {
             String[] projection = { MediaStore.Images.ImageColumns.ORIENTATION };
             Cursor c = context.getContentResolver().query(selectedImage, projection, null, null, null);
-            if (c.moveToFirst()) {
+            if (c.moveToFirst() && c.getColumnCount() > 0) {
                 final int rotation = c.getInt(0);
                 c.close();
                 return rotateImage(img, rotation);
@@ -261,23 +266,18 @@ public class StartActivity extends AppCompatActivity {
             mLoadingBar = Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor),
                     R.string.load,
                     Snackbar.LENGTH_INDEFINITE);
+            Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout) mLoadingBar.getView();
+            TextView tv = (TextView) snack_view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setGravity(Gravity.CENTER_HORIZONTAL);
+            final ProgressBar indicator = new ProgressBar(StartActivity.this);
+            indicator.getIndeterminateDrawable().setColorFilter(
+                    new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY));
+            indicator.setScaleY(0.5f);
+            indicator.setScaleX(0.5f);
+            snack_view.addView(indicator, 1);
+
             mLoadingBar.show();
             mCode = code;
-        }
-
-        public String getRealPathFromURI(Context context, Uri contentUri) {
-            Cursor cursor = null;
-            try {
-                String[] proj = { MediaStore.Images.Media.DATA };
-                cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                cursor.moveToFirst();
-                return cursor.getString(column_index);
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
-            }
         }
 
         @Override

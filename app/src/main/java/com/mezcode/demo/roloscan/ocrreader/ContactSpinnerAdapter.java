@@ -46,9 +46,6 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
     static final int IND_NOTES = 7;
     static final int IND_PHONE2 = 8;
     static final int IND_EMAIL2 = 9;
-
-    static String[] sValueList;
-    static Drawable[] sIcons;
     final static int[] spinicons = new int[] {
             R.drawable.ic_account_circle_white_24dp,
             R.drawable.ic_phone_white_24dp,
@@ -58,9 +55,11 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
             R.drawable.ic_location_on_white_24dp,
             R.drawable.ic_chat_white_24dp,
             R.drawable.ic_note_add_white_24dp,
-            R.drawable.ic_contact_phone_white_24dp,
-            R.drawable.ic_contact_mail_white_24dp
+            R.drawable.ic_phone_white_24dp,
+            R.drawable.ic_mail_outline_white_24dp
     };
+    static String[] sValueList;
+    static Drawable[] sIcons;
 
     public ContactSpinnerAdapter(Context ctx) {
         if (sValueList == null) {
@@ -74,72 +73,6 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
                 sIcons[dex] = rsrcs.getDrawable(spinicons[dex], thm);
             }
         }
-    }
-
-    @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        if (position >= sValueList.length) return null;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.spinner_item, null);
-            convertView.setTag(convertView.findViewById(R.id.labelText));
-        }
-
-        ((TextView)convertView.getTag()).setText(sValueList[position]);
-        return convertView;
-    }
-
-    @Override
-    public void registerDataSetObserver(DataSetObserver dataSetObserver) { }
-
-    @Override
-    public void unregisterDataSetObserver(DataSetObserver dataSetObserver) { }
-
-    @Override
-    public int getCount() {
-        return sValueList.length;
-    }
-
-    @Override
-    public Object getItem(int i) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return true;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (position >= sValueList.length) return null;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.spinner_item, null);
-            convertView.setTag(convertView.findViewById(R.id.labelText));
-        }
-        ((TextView)convertView.getTag()).setText(sValueList[position]);
-        ((TextView)convertView.getTag()).setCompoundDrawablesRelativeWithIntrinsicBounds(
-                null, null, sIcons[position], null);
-        return convertView;
-    }
-
-    @Override
-    public int getItemViewType(int i) {
-        return 0;
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return 1;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
     }
 
     /**
@@ -222,6 +155,72 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
             returnValues[dex++] = index;
         }
         return returnValues;
+    }
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        if (position >= sValueList.length) return null;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.spinner_item, null);
+            convertView.setTag(convertView.findViewById(R.id.labelText));
+        }
+
+        ((TextView)convertView.getTag()).setText(sValueList[position]);
+        return convertView;
+    }
+
+    @Override
+    public void registerDataSetObserver(DataSetObserver dataSetObserver) { }
+
+    @Override
+    public void unregisterDataSetObserver(DataSetObserver dataSetObserver) { }
+
+    @Override
+    public int getCount() {
+        return sValueList.length;
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return null;
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return true;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (position >= sValueList.length) return null;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.spinner_item, null);
+            convertView.setTag(convertView.findViewById(R.id.labelText));
+        }
+        ((TextView)convertView.getTag()).setText(sValueList[position]);
+        ((TextView)convertView.getTag()).setCompoundDrawablesRelativeWithIntrinsicBounds(
+                null, null, sIcons[position], null);
+        return convertView;
+    }
+
+    @Override
+    public int getItemViewType(int i) {
+        return 0;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 1;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 
 }

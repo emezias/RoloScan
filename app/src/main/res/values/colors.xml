@@ -2,8 +2,8 @@
 <resources>
     <color name="control_background">#cc4285f4</color>
     <color name="primary">#607D8B</color>
-    <color name="primaryDark">#37474F</color>
+    <color name="primaryDark">#49374f</color>
     <color name="accent">#42A5F5</color>
-    <color name="bg_accent">#8842A5F5</color>
+    <color name="bg_accent">#CCB942F5</color>
     <color name="disabledGray">#55BDBDBD</color>
 </resources>

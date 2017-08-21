@@ -39,11 +39,9 @@
     </style>
 
     <style name="DialogButton">
-        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_margin">18dp</item>
         <item name="android:background">@drawable/btn_background</item>
-        <item name="android:padding">6dp</item>
         <item name="android:elevation">4dp</item>
-        <item name="android:onClick">dlg_button</item>
     </style>
 
 </resources>

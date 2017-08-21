@@ -13,7 +13,7 @@
         android:allowBackup="true"
         android:fullBackupContent="false"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/appName"
         android:supportsRtl = "true"
         android:theme="@style/Theme.AppCompat" >
@@ -25,7 +25,6 @@
             android:value="ocr" />
 
         <activity android:name="com.mezcode.demo.roloscan.ocrreader.StartActivity"
-            android:label=""
             android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -30,4 +30,20 @@
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
+    <style name="StartButton">
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:background">@drawable/btn_background</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <style name="DialogButton">
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:background">@drawable/btn_background</item>
+        <item name="android:padding">6dp</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:onClick">dlg_button</item>
+    </style>
+
 </resources>

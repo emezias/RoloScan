@@ -25,6 +25,7 @@
             android:value="ocr" />
 
         <activity android:name="com.mezcode.demo.roloscan.ocrreader.StartActivity"
+            android:label=""
             android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

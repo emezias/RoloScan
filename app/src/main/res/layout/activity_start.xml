@@ -1,58 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp"
     tools:context="com.mezcode.demo.roloscan.ocrreader.StartActivity">
-
-    <TextView android:id="@+id/start_message2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_margin="8dp"
-        android:gravity="center"
-        android:text="@string/startText2"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <ImageButton android:id="@+id/start_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/start_message2"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="16dp"
-        android:background="@drawable/btn_background"
-        android:contentDescription="@string/photo"
-        android:onClick="getPhoto"
-        android:padding="12dp"
-        android:src="@drawable/btn_photo" />
 
     <TextView android:id="@+id/start_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/start_photo"
-        android:layout_margin="8dp"
+        android:layout_marginTop="48dp"
         android:gravity="center"
         android:text="@string/startText1"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <ImageButton android:id="@+id/start_gallery"
+    <ImageButton android:id="@+id/start_photo"
+        style="@style/StartButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/start_message2"
-        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/photo"
+        android:onClick="getPhoto"
+        android:src="@drawable/btn_photo" />
+
+    <TextView android:id="@+id/start_message2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="@string/startText2"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ImageButton android:id="@+id/start_gallery"
+        style="@style/StartButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/btn_background"
         android:contentDescription="@string/gallery_prompt"
         android:onClick="getPhoto"
-        android:padding="12dp"
         android:src="@drawable/btn_gallery" />
 
     <TextView android:id="@+id/start_message3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/start_gallery"
-        android:layout_margin="8dp"
+        android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="@string/startText3"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -60,7 +51,6 @@
     <View android:id="@+id/snack_anchor"
         android:layout_width="1dp"
         android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_gravity="fill_vertical|center_horizontal"/>
 
-</RelativeLayout>
+</LinearLayout>

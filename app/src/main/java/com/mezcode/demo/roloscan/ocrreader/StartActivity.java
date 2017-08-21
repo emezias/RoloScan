@@ -154,6 +154,9 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
         setContentView(R.layout.activity_start);
     }
 
@@ -185,7 +188,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void dlg_button(View btn) {
-
+        //set in dialog layout xml
         switch (btn.getId()) {
             case R.id.dlg_confirm:
                 final Intent tnt = new Intent(getApplicationContext(), SetContactFieldsActivity.class);

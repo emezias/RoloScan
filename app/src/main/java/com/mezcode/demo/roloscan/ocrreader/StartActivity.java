@@ -24,6 +24,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -40,7 +41,6 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -89,10 +89,7 @@ public class StartActivity extends AppCompatActivity {
 
     public static boolean permissionGranted(
             int requestCode, int permissionCode, int[] grantResults) {
-        if (requestCode == permissionCode) {
-            return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
-        }
-        return false;
+        return requestCode == permissionCode && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
     }
 
     //https://teamtreehouse.com/community/how-to-rotate-images-to-the-correct-orientation-portrait-by-editing-the-exif-data-once-photo-has-been-taken
@@ -101,7 +98,7 @@ public class StartActivity extends AppCompatActivity {
         if (selectedImage.getScheme().equals("content")) {
             String[] projection = { MediaStore.Images.ImageColumns.ORIENTATION };
             Cursor c = context.getContentResolver().query(selectedImage, projection, null, null, null);
-            if (c.moveToFirst() && c.getColumnCount() > 0) {
+            if (c.getCount() > 0 && c.moveToFirst() && c.getColumnCount() > 0) {
                 final int rotation = c.getInt(0);
                 c.close();
                 return rotateImage(img, rotation);
@@ -154,10 +151,13 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.logo);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
         setContentView(R.layout.activity_start);
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setLogo(R.drawable.logo);
+            actionBar.setDisplayUseLogoEnabled(true);
+        }
     }
 
     public void getPhoto(View v) {
@@ -234,7 +234,7 @@ public class StartActivity extends AppCompatActivity {
         Log.d(TAG, "on activity result? " + requestCode + " result " + resultCode + " data? " + (data != null));
         //Uri photoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", getCameraFile());
         if (resultCode == RESULT_OK) {
-            if (requestCode == GALLERY_REQUEST && data.getData() != null) {
+            if (requestCode == GALLERY_REQUEST && data != null && data.getData() != null) {
                 mPhotoUri = data.getData();
             }
             new ReadPhotoTask(requestCode).execute();
@@ -282,8 +282,8 @@ public class StartActivity extends AppCompatActivity {
      * It builds the mContactFields array of Strings to pass to the next activity
      */
     private class ReadPhotoTask extends AsyncTask<Void, Void, String> {
+        final Snackbar mLoadingBar;
         int mCode;
-        Snackbar mLoadingBar;
 
         public ReadPhotoTask(int code) {
             mLoadingBar = Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor),
@@ -338,8 +338,6 @@ public class StartActivity extends AppCompatActivity {
                     Log.w(TAG, "empty result");
                     mCode = R.string.no_text;
                 }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -2,7 +2,6 @@
 <resources>
     <string name="retry">Volver a Intentar</string>
     <string name="confirm">Crear Contacto</string>
-    <string name="label">Escanear Tarjeta</string>
     <string name="label2">Revisar Texto y Guardar</string>
     <string name="photo">Tomar Foto</string>
     <string name="gallery_prompt">Seleccionar Foto</string>
@@ -10,8 +9,6 @@
     <string name="returnError">Porfavor Intente Nuevamente. No se encuentra la foto</string>
     <string name="save">Guardar</string>
     <string name="ocr_success">Escaneo Exitoso</string>
-    <string name="ocr_failure">No Se Capturo Texto</string>
-    <string name="ocr_error">Error Leyendo Texto: %1$s</string>
     <string name="no_text">No se Encontro Texto</string>
     <string name="scan2label">Escaneo</string>
     <string name="copied">Texto Copiado</string>
@@ -20,7 +17,7 @@
         <item>Nombre</item>
         <item>Telefono</item>
         <item>Email</item>
-        <item>Compañia</item>
+        <item>Compañía</item>
         <item>Titulo</item>
         <item>Direccion</item>
         <item>I.M.</item>

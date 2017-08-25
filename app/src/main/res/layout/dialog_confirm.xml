@@ -65,6 +65,6 @@
         android:layout_margin="8dp"
         android:padding="8dp"
         android:scrollbars="vertical"
-        android:text="Snap a card"
+        android:text="@string/appName"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 </LinearLayout>

@@ -129,7 +129,7 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
                 }
                 break;
             }
-            if (valueShown.indexOf("-") > -1) {
+            if (valueShown.contains("-")) {
                 if (valueShown.substring(valueShown.indexOf("-")+1).contains("-")) {
                     if (!selected.contains(IND_PHONE)) {
                         map.put(valueShown, IND_PHONE);

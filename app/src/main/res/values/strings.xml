@@ -3,7 +3,6 @@
     <string name="appName" translatable="false">RoloScan</string>
     <string name="retry">Retry</string>
     <string name="confirm">Create Contact</string>
-    <string name="label">Scan</string>
     <string name="label2">Check Text and Save</string>
     <string name="startText1">Take a photo (of a business card)</string>
     <string name="startText2">OR</string>
@@ -14,8 +13,6 @@
     <string name="returnError">Please try again. The image is missing.</string>
     <string name="save">Save</string>
     <string name="ocr_success">Successful scan</string>
-    <string name="ocr_failure">No text captured</string>
-    <string name="ocr_error">Error reading text: %1$s</string>
     <string name="no_text">No text was found</string>
     <string name="scan2label">Scan to Text</string>
     <string name="copied">Text Copied</string>

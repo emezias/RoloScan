@@ -7,9 +7,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="2dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="8dp"
         android:padding="16dp">
 
         <Spinner
@@ -17,14 +17,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:entries="@array/labels" />
+            android:entries="@array/labels"
+            android:labelFor="@+id/cc_edit1" />
 
         <ImageButton
             android:id="@+id/cc_btn1"
             style="@style/CloseButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner1" />
+            android:layout_below="@id/cc_spinner1"
+            android:contentDescription="@android:string/cut" />
 
         <EditText
             android:id="@+id/cc_edit1"
@@ -39,14 +41,16 @@
             style="@style/SpinnerStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit1" />
+            android:layout_below="@id/cc_edit1"
+            android:labelFor="@+id/cc_edit2" />
 
         <ImageButton
             android:id="@+id/cc_btn2"
             style="@style/CloseButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner2"  />
+            android:layout_below="@id/cc_spinner2"
+            android:contentDescription="@android:string/cut"  />
 
         <EditText
             android:id="@+id/cc_edit2"
@@ -61,14 +65,16 @@
             style="@style/SpinnerStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit2" />
+            android:layout_below="@id/cc_edit2"
+            android:labelFor="@+id/cc_edit3" />
 
         <ImageButton
             android:id="@+id/cc_btn3"
             style="@style/CloseButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner3" />
+            android:layout_below="@id/cc_spinner3"
+            android:contentDescription="@android:string/cut" />
 
         <EditText
             android:id="@+id/cc_edit3"
@@ -83,14 +89,16 @@
             style="@style/SpinnerStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit3" />
+            android:layout_below="@id/cc_edit3"
+            android:labelFor="@+id/cc_edit4" />
 
         <ImageButton
             android:id="@+id/cc_btn4"
             style="@style/CloseButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner4" />
+            android:layout_below="@id/cc_spinner4"
+            android:contentDescription="@android:string/cut" />
 
         <EditText
             android:id="@+id/cc_edit4"
@@ -105,14 +113,16 @@
             style="@style/SpinnerStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit4" />
+            android:layout_below="@id/cc_edit4"
+            android:labelFor="@+id/cc_edit5" />
 
         <ImageButton
             android:id="@+id/cc_btn5"
             style="@style/CloseButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner5" />
+            android:layout_below="@id/cc_spinner5"
+            android:contentDescription="@android:string/cut" />
 
         <EditText
             android:id="@+id/cc_edit5"
@@ -127,14 +137,16 @@
             style="@style/SpinnerStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit5" />
+            android:layout_below="@id/cc_edit5"
+            android:labelFor="@+id/cc_edit6" />
 
         <ImageButton
             android:id="@+id/cc_btn6"
             style="@style/CloseButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner6" />
+            android:layout_below="@id/cc_spinner6"
+            android:contentDescription="@android:string/cut" />
 
         <EditText
             android:id="@+id/cc_edit6"
@@ -149,14 +161,16 @@
             style="@style/SpinnerStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit6" />
+            android:layout_below="@id/cc_edit6"
+            android:labelFor="@+id/cc_edit7" />
 
         <ImageButton
             android:id="@+id/cc_btn7"
             style="@style/CloseButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner7" />
+            android:layout_below="@id/cc_spinner7"
+            android:contentDescription="@android:string/cut" />
 
         <EditText
             android:id="@+id/cc_edit7"
@@ -171,14 +185,16 @@
             style="@style/SpinnerStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit7" />
+            android:layout_below="@id/cc_edit7"
+            android:labelFor="@+id/cc_edit8" />
 
         <ImageButton
             android:id="@+id/cc_btn8"
             style="@style/CloseButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner8" />
+            android:layout_below="@id/cc_spinner8"
+            android:contentDescription="@android:string/cut" />
 
         <EditText
             android:id="@+id/cc_edit8"
@@ -193,14 +209,16 @@
             style="@style/SpinnerStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit8" />
+            android:layout_below="@id/cc_edit8"
+            android:labelFor="@+id/cc_edit9" />
 
         <ImageButton
             android:id="@+id/cc_btn9"
             style="@style/CloseButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner9" />
+            android:layout_below="@id/cc_spinner9"
+            android:contentDescription="@android:string/cut" />
 
         <EditText
             android:id="@+id/cc_edit9"
@@ -216,14 +234,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/cc_edit9"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:labelFor="@+id/cc_edit10" />
 
         <ImageButton
             android:id="@+id/cc_btn10"
             style="@style/CloseButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner10"  />
+            android:layout_below="@id/cc_spinner10"
+            android:contentDescription="@android:string/cut"  />
 
         <EditText
             android:id="@+id/cc_edit10"

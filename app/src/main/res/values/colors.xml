@@ -6,4 +6,5 @@
     <color name="accent">#42A5F5</color>
     <color name="bg_accent">#CCB942F5</color>
     <color name="disabledGray">#55BDBDBD</color>
+    <color name="toolbarBack">#1e75ae</color>
 </resources>

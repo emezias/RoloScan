@@ -13,7 +13,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +20,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.media.ExifInterface;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -42,6 +42,7 @@ import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -104,7 +105,10 @@ public class StartActivity extends AppCompatActivity {
                 return rotateImage(img, rotation);
             }
         }
-        ExifInterface ei = new ExifInterface(getRealPathFromURI(context, selectedImage));
+        //ExifInterface ei = new ExifInterface(checkUri(context, selectedImage));
+        InputStream in = context.getContentResolver().openInputStream(selectedImage);
+        ExifInterface ei = new ExifInterface(in);
+
         int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
         Log.d(TAG, "Orientation is: " + orientation);
 
@@ -126,19 +130,20 @@ public class StartActivity extends AppCompatActivity {
         return Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
     }
 
-    public static String getRealPathFromURI(Context context, Uri contentUri) {
+    public static Uri checkUri(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
             String[] proj = { MediaStore.Images.Media.DATA };
             cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
             if (cursor.getCount() > 0 && cursor.getColumnCount() > 0) {
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                cursor.moveToFirst();
-                return cursor.getString(column_index);
+                Log.d(TAG, "found in Media Store");
+                return contentUri;
             } else {
                 final String path = contentUri.getPath();
-                if ((new File(path)).exists()) return contentUri.getPath();
-                else return (new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), FILE_NAME)).getPath();
+                if ((new File(path)).exists()) return contentUri;
+                else return FileProvider.getUriForFile(context,
+                        context.getApplicationContext().getPackageName() + ".provider",
+                        new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), FILE_NAME));
             }
 
         } finally {
@@ -234,7 +239,7 @@ public class StartActivity extends AppCompatActivity {
         Log.d(TAG, "on activity result? " + requestCode + " result " + resultCode + " data? " + (data != null));
         //Uri photoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", getCameraFile());
         if (resultCode == RESULT_OK) {
-            if (requestCode == GALLERY_REQUEST && data != null && data.getData() != null) {
+            if (data != null && data.getData() != null) {
                 mPhotoUri = data.getData();
             }
             new ReadPhotoTask(requestCode).execute();
@@ -306,9 +311,10 @@ public class StartActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... params) {
             try {
+
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
-                //final String filename = getRealPathFromURI(StartActivity.this, mPhotoUri);
-                bitmap = rotateImageIfRequired(bitmap, StartActivity.this, mPhotoUri);
+                bitmap = rotateImageIfRequired(bitmap, StartActivity.this,
+                        checkUri(StartActivity.this, mPhotoUri));
 
                 final Frame frame = (new Frame.Builder()).setBitmap(bitmap).build();
                 final TextRecognizer detector = new TextRecognizer.Builder(StartActivity.this).build();

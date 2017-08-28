@@ -349,10 +349,9 @@ public class StartActivity extends AppCompatActivity {
             super.onPostExecute(s);
             if (isCancelled()) return;
             mLoadingBar.dismiss();
-            if (TextUtils.isEmpty(s)) {
-                Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor), mCode, Snackbar.LENGTH_SHORT).show();
-            } else {
-                showConfirmDialog(s, mCode == CAMERA_REQUEST);
+            Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor), mCode, Snackbar.LENGTH_SHORT).show();
+            if (!TextUtils.isEmpty(s)) {
+                showConfirmDialog(s, mCode == R.string.ocr_success);
             }
         }
     }

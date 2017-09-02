@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="CloseButtonStyle">
+        <item name="android:padding">4dp</item>
+        <item name="android:background">@drawable/btn_background</item>
+        <item name="android:onClick">clearText</item>
+        <item name="android:contentDescription">@android:string/cut</item>
+        <item name="android:src">@drawable/btn_close</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+
+    <style name="SpinnerStyle">
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:entries">@array/labels</item>
+    </style>
+
+    <style name="ETStyle">
+        <item name="android:layout_marginRight">40dp</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+
+    <style name="StartButton">
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:background">@drawable/btn_background</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <style name="DialogButton">
+        <item name="android:layout_margin">18dp</item>
+        <item name="android:background">@drawable/btn_background</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+</resources>

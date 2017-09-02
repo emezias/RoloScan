@@ -8,59 +8,63 @@
     <LinearLayout android:id="@+id/dlg_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:minHeight="16dp" >
-
+        android:minHeight="16dp"
+        android:orientation="horizontal" >
+        <!-- Dialog Button style sets the onClick method to dlg_button -->
         <ImageButton android:id="@+id/dlg_retry"
+            style="DialogButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/btn_redo"
             android:contentDescription="@string/retry"
-            android:background="@drawable/btn_background"
             android:onClick="dlg_button"
-            android:layout_margin="8dp"
-            android:padding="6dp"/>
+            android:src="@drawable/btn_redo"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight=".1" />
 
         <ImageButton android:id="@+id/dlg_confirm"
+            style="DialogButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/btn_done"
             android:contentDescription="@string/confirm"
-            android:background="@drawable/btn_background"
             android:onClick="dlg_button"
-            android:layout_margin="8dp"
-            android:padding="6dp" />
-
+            android:src="@drawable/btn_done" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight=".1" />
         <ImageButton android:id="@+id/dlg_share"
+            style="DialogButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/btn_share"
             android:contentDescription="@string/share"
-            android:background="@drawable/btn_background"
             android:onClick="dlg_button"
-            android:layout_margin="8dp"
-            android:padding="6dp" />
-
+            android:src="@drawable/btn_share" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight=".1" />
         <ImageButton android:id="@+id/dlg_clipboard"
+            style="DialogButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/btn_clipboard"
             android:contentDescription="@android:string/copy"
-            android:background="@drawable/btn_background"
             android:onClick="dlg_button"
-            android:layout_margin="8dp"
-            android:padding="6dp" />
+            android:src="@drawable/btn_clipboard" />
     </LinearLayout>
+
     <TextView android:id="@+id/dlg_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical"
         android:layout_margin="8dp"
         android:padding="8dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Snap a card" />
+        android:scrollbars="vertical"
+        android:text="@string/appName"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 </LinearLayout>

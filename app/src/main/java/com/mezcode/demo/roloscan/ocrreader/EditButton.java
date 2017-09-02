@@ -11,7 +11,7 @@ import android.widget.ImageButton;
  */
 
 public class EditButton implements TextWatcher {
-    private ImageButton mXButton;
+    private final ImageButton mXButton;
 
     public EditButton(ImageButton btn) {
         mXButton = btn;

@@ -16,11 +16,11 @@ import android.widget.TextView;
 public class ConfirmTextDialog extends DialogFragment {
     public static final String TAG = ConfirmTextDialog.class.getSimpleName();
 
-    public static ConfirmTextDialog newInstance(String diplayText, boolean isPhoto) {
+    public static ConfirmTextDialog newInstance(String displayText, boolean isPhoto) {
         ConfirmTextDialog fragment = new ConfirmTextDialog();
         final Bundle args = new Bundle();
         args.putBoolean(TAG, isPhoto);
-        args.putString(StartActivity.TAG, diplayText);
+        args.putString(StartActivity.TAG, displayText);
         fragment.setArguments(args);
         return fragment;
     }

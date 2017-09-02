@@ -46,9 +46,6 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
     static final int IND_NOTES = 7;
     static final int IND_PHONE2 = 8;
     static final int IND_EMAIL2 = 9;
-
-    static String[] sValueList;
-    static Drawable[] sIcons;
     final static int[] spinicons = new int[] {
             R.drawable.ic_account_circle_white_24dp,
             R.drawable.ic_phone_white_24dp,
@@ -58,9 +55,11 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
             R.drawable.ic_location_on_white_24dp,
             R.drawable.ic_chat_white_24dp,
             R.drawable.ic_note_add_white_24dp,
-            R.drawable.ic_contact_phone_white_24dp,
-            R.drawable.ic_contact_mail_white_24dp
+            R.drawable.ic_phone_white_24dp,
+            R.drawable.ic_mail_outline_white_24dp
     };
+    static String[] sValueList;
+    static Drawable[] sIcons;
 
     public ContactSpinnerAdapter(Context ctx) {
         if (sValueList == null) {
@@ -74,6 +73,88 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
                 sIcons[dex] = rsrcs.getDrawable(spinicons[dex], thm);
             }
         }
+    }
+
+    /**
+     * This method returns the spinner indices for the SetContactFieldsActivity
+     * if there is no pattern match, contact activity has to handle the default -1 index value
+     * @param values - the text blocks read in by the TextDetector
+     * @return - the indices for the spinners that have a value
+     */
+    public static int[] getIndices(String[] values) {
+        Log.d(TAG, "get Indices");
+        final ArrayList<Integer> selected = new ArrayList<>();
+        //int dex = values.length;
+        //try to match string value to correct label
+        final HashMap<String, Integer> map = new HashMap<>();
+        for (String valueShown : values) {
+            if (TextUtils.isEmpty(valueShown)) break;
+            if (android.util.Patterns.EMAIL_ADDRESS.matcher(valueShown).matches()) {
+                if (!selected.contains(IND_EMAIL)) {
+                    selected.add(IND_EMAIL);
+                    map.put(valueShown, IND_EMAIL);
+                } else {
+                    map.put(valueShown, IND_EMAIL2);
+                }
+                break;
+            }
+            if (valueShown.contains("@")) {
+                if (valueShown.contains(".")) {
+                    if (!selected.contains(IND_EMAIL)) {
+                        selected.add(IND_EMAIL);
+                        map.put(valueShown, IND_EMAIL);
+                    } else {
+                        map.put(valueShown, IND_EMAIL2);
+                    }
+                } else {
+                    map.put(valueShown, IND_IM);
+                }
+                break;
+            }
+            if (android.util.Patterns.PHONE.matcher(valueShown).matches() || valueShown.contains("(") && valueShown.contains(")")) {
+                if (!selected.contains(IND_PHONE)) {
+                    map.put(valueShown, IND_PHONE);
+                    selected.add(IND_PHONE);
+                } else {
+                    map.put(valueShown, IND_PHONE2);
+                }
+                break;
+            }
+            if (Patterns.PHONE.matcher(valueShown).matches()) {
+                if (!selected.contains(IND_PHONE)) {
+                    map.put(valueShown, IND_PHONE);
+                    selected.add(IND_PHONE);
+                } else {
+                    map.put(valueShown, IND_PHONE2);
+                }
+                break;
+            }
+            if (valueShown.contains("-")) {
+                if (valueShown.substring(valueShown.indexOf("-")+1).contains("-")) {
+                    if (!selected.contains(IND_PHONE)) {
+                        map.put(valueShown, IND_PHONE);
+                        selected.add(IND_PHONE);
+                    } else {
+                        map.put(valueShown, IND_PHONE2);
+                    }
+                    break;
+                }
+            }
+            if (Character.isDigit(valueShown.charAt(0)) &&
+                    Character.isDigit(valueShown.charAt(valueShown.length() - 1))) {
+                map.put(valueShown, IND_ADDR);
+                break;
+            }
+            Log.d(TAG, "fell through " + valueShown);
+            map.put(valueShown, -1);
+        } //end for loop string values
+        selected.clear();
+        int dex = 0;
+        int[] returnValues = new int[map.size()];
+        for(Integer index: map.values()) {
+            returnValues[dex++] = index;
+        }
+        return returnValues;
     }
 
     @Override
@@ -140,88 +221,6 @@ public class ContactSpinnerAdapter implements SpinnerAdapter {
     @Override
     public boolean isEmpty() {
         return false;
-    }
-
-    /**
-     * This method returns the spinner indices for the SetContactFieldsActivity
-     * if there is no pattern match, contact activity has to handle the default -1 index value
-     * @param values - the text blocks read in by the TextDetector
-     * @return - the indices for the spinners that have a value
-     */
-    public static int[] getIndices(String[] values) {
-        Log.d(TAG, "get Indices");
-        final ArrayList<Integer> selected = new ArrayList<>();
-        //int dex = values.length;
-        //try to match string value to correct label
-        final HashMap<String, Integer> map = new HashMap<>();
-        for (String valueShown : values) {
-            if (TextUtils.isEmpty(valueShown)) break;
-            if (android.util.Patterns.EMAIL_ADDRESS.matcher(valueShown).matches()) {
-                if (!selected.contains(IND_EMAIL)) {
-                    selected.add(IND_EMAIL);
-                    map.put(valueShown, IND_EMAIL);
-                } else {
-                    map.put(valueShown, IND_EMAIL2);
-                }
-                break;
-            }
-            if (valueShown.contains("@")) {
-                if (valueShown.contains(".")) {
-                    if (!selected.contains(IND_EMAIL)) {
-                        selected.add(IND_EMAIL);
-                        map.put(valueShown, IND_EMAIL);
-                    } else {
-                        map.put(valueShown, IND_EMAIL2);
-                    }
-                } else {
-                    map.put(valueShown, IND_IM);
-                }
-                break;
-            }
-            if (android.util.Patterns.PHONE.matcher(valueShown).matches() || valueShown.contains("(") && valueShown.contains(")")) {
-                if (!selected.contains(IND_PHONE)) {
-                    map.put(valueShown, IND_PHONE);
-                    selected.add(IND_PHONE);
-                } else {
-                    map.put(valueShown, IND_PHONE2);
-                }
-                break;
-            }
-            if (Patterns.PHONE.matcher(valueShown).matches()) {
-                if (!selected.contains(IND_PHONE)) {
-                    map.put(valueShown, IND_PHONE);
-                    selected.add(IND_PHONE);
-                } else {
-                    map.put(valueShown, IND_PHONE2);
-                }
-                break;
-            }
-            if (valueShown.indexOf("-") > -1) {
-                if (valueShown.substring(valueShown.indexOf("-")+1).contains("-")) {
-                    if (!selected.contains(IND_PHONE)) {
-                        map.put(valueShown, IND_PHONE);
-                        selected.add(IND_PHONE);
-                    } else {
-                        map.put(valueShown, IND_PHONE2);
-                    }
-                    break;
-                }
-            }
-            if (Character.isDigit(valueShown.charAt(0)) &&
-                    Character.isDigit(valueShown.charAt(valueShown.length() - 1))) {
-                map.put(valueShown, IND_ADDR);
-                break;
-            }
-            Log.d(TAG, "fell through " + valueShown);
-            map.put(valueShown, -1);
-        } //end for loop string values
-        selected.clear();
-        int dex = 0;
-        int[] returnValues = new int[map.size()];
-        for(Integer index: map.values()) {
-            returnValues[dex++] = index;
-        }
-        return returnValues;
     }
 
 }

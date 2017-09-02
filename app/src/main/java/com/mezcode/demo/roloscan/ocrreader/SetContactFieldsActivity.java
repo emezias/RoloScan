@@ -32,13 +32,13 @@ import java.util.HashMap;
 public class SetContactFieldsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static final String TAG = SetContactFieldsActivity.class.getSimpleName();
-    String[] mContactFields;
-    int[] editFields = new int[] { R.id.cc_edit1, R.id.cc_edit2, R.id.cc_edit3, R.id.cc_edit4, R.id.cc_edit5,
+    final int[] editFields = new int[] { R.id.cc_edit1, R.id.cc_edit2, R.id.cc_edit3, R.id.cc_edit4, R.id.cc_edit5,
             R.id.cc_edit6, R.id.cc_edit7, R.id.cc_edit8, R.id.cc_edit9, R.id.cc_edit10 };
-    int[] spinners = new int[] { R.id.cc_spinner1, R.id.cc_spinner2, R.id.cc_spinner3, R.id.cc_spinner4, R.id.cc_spinner5,
+    final int[] spinners = new int[] { R.id.cc_spinner1, R.id.cc_spinner2, R.id.cc_spinner3, R.id.cc_spinner4, R.id.cc_spinner5,
             R.id.cc_spinner6, R.id.cc_spinner7, R.id.cc_spinner8, R.id.cc_spinner9, R.id.cc_spinner10 };
-    int[] btn_fields = new int[] { R.id.cc_btn1, R.id.cc_btn2, R.id.cc_btn3, R.id.cc_btn4, R.id.cc_btn5,
+    final int[] btn_fields = new int[] { R.id.cc_btn1, R.id.cc_btn2, R.id.cc_btn3, R.id.cc_btn4, R.id.cc_btn5,
             R.id.cc_btn6, R.id.cc_btn7, R.id.cc_btn8, R.id.cc_btn9, R.id.cc_btn10 };
+    String[] mContactFields;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +132,7 @@ public class SetContactFieldsActivity extends AppCompatActivity implements Adapt
     }
 
     //This demo code comes from the ContactsContract documentation
-    //https://developer.android.com/reference/android/provider/ContactsContract.Intents.Insert.html
+    /* https://developer.android.com/reference/android/provider/ContactsContract.Intents.Insert.html
     void createContactTest() {
         ArrayList<ContentValues> data = new ArrayList<ContentValues>();
 

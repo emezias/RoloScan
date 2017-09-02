@@ -3,7 +3,6 @@
     package="com.mezcode.demo.roloscan.ocrreader"
     android:installLocation="auto" >
 
-    <uses-feature android:name="android.hardware.camera" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
@@ -13,7 +12,7 @@
         android:allowBackup="true"
         android:fullBackupContent="false"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/appName"
         android:supportsRtl = "true"
         android:theme="@style/Theme.AppCompat" >
@@ -32,8 +31,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.mezcode.demo.roloscan.ocrreader.SetContactFieldsActivity"
-            android:screenOrientation="sensorPortrait"
-            android:label="@string/label2"/>
+            android:label="@string/label2"
+            android:screenOrientation="sensorPortrait"/>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"

@@ -36,11 +36,7 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/dictionaries
-.idea/libraries
+.idea/
 
 # Keystore files
 *.jks
@@ -56,7 +52,6 @@ freeline.py
 freeline/
 freeline_project_description.json
 
-.idea/
 app/src/main/gen/
 app/src/main/main.iml
 app/src/main/java/com/mezcode/demo/roloscan/.DS_Store

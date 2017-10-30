@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.mezcode.demo.roloscan"
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
     }
@@ -20,12 +20,14 @@ android {
 }
 
 dependencies {
+    final supportLibraryVersion = '26.1.0'
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
-	compile 'com.android.support:support-v4:25.3.1'
-    compile "com.android.support:appcompat-v7:25.3.1"
-    compile "com.android.support:support-v13:25.3.1"
-    compile 'com.google.android.gms:play-services-vision:11.0.4'
-    compile 'com.android.support:design:25.3.1'
-    compile "com.android.support:exifinterface:25.3.1"
+	compile "com.android.support:support-v4:$supportLibraryVersion"
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    compile "com.android.support:support-v13:$supportLibraryVersion"
+    compile 'com.google.android.gms:play-services-vision:11.4.2'
+    compile "com.android.support:design:$supportLibraryVersion"
+    compile "com.android.support:exifinterface:$supportLibraryVersion"
 
 }

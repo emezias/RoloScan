@@ -2,8 +2,6 @@ package com.mezcode.demo.roloscan.ocrreader;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -208,19 +206,10 @@ public class StartActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.dlg_clipboard:
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText(getString(R.string.scan2label),
-                        ((TextView) mDialog.getView().findViewById(R.id.dlg_message)).getText());
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show();
+                // TODO: Copy found text to clipboard
                 break;
             case R.id.dlg_share:
-                final Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT,
-                        ((TextView) mDialog.getView().findViewById(R.id.dlg_message)).getText());
-                sendIntent.setType(MIME_TYPE);
-                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.scan2label)));
+                // TODO: Launch a share dialog
                 break;
         }
         mDialog.dismiss();

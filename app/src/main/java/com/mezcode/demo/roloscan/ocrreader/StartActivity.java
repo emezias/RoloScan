@@ -1,6 +1,5 @@
 package com.mezcode.demo.roloscan.ocrreader;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -166,26 +165,10 @@ public class StartActivity extends AppCompatActivity {
     public void getPhoto(View v) {
         switch (v.getId()) {
             case R.id.start_photo:
-                if (requestPermission(this, CAMERA_REQUEST,
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.CAMERA)) {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    mPhotoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider",
-                            new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), FILE_NAME));
-                    //Log.d(TAG, "path? " + mPhotoUri.getPath());
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivityForResult(intent, CAMERA_REQUEST);
-                }
+                // TODO: Launch a camera activity to take a photo
                 break;
             case R.id.start_gallery:
-                if (requestPermission(this, GALLERY_REQUEST, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, getString(R.string.gallery_prompt)),
-                            GALLERY_REQUEST);
-                }
+                // TODO: Launch a gallery picker activity to choose a photo
                 break;
         }
     }

@@ -22,6 +22,9 @@
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="ocr" />
+        <meta-data
+            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+            android:value="ocr" />
 
         <activity android:name="com.mezcode.demo.roloscan.ocrreader.StartActivity"
             android:screenOrientation="sensorPortrait">

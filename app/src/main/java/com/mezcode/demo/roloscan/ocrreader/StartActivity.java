@@ -14,7 +14,6 @@ import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -28,17 +27,19 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.vision.Frame;
-import com.google.android.gms.vision.text.Text;
-import com.google.android.gms.vision.text.TextBlock;
-import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.text.FirebaseVisionText;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,6 +62,7 @@ public class StartActivity extends AppCompatActivity {
     Uri mPhotoUri;
     String[] mContactFields;
     ConfirmTextDialog mDialog;
+    boolean initComplete = false;
 
     //Permissions logic modeled on cloud vision, but nested
     //https://github.com/GoogleCloudPlatform/cloud-vision/blob/master/android/CloudVision/
@@ -157,6 +159,10 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+        if (!initComplete) {
+            FirebaseApp.initializeApp(getApplicationContext());
+            initComplete = true;
+        }
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowHomeEnabled(true);
@@ -242,7 +248,12 @@ public class StartActivity extends AppCompatActivity {
             if (data != null && data.getData() != null) {
                 mPhotoUri = data.getData();
             }
-            new ReadPhotoTask(requestCode).execute();
+            try {
+                firebaseInBackground(requestCode);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(TAG, "Exception reading text from photo: " + e.getMessage());
+            }
         } else {
             Toast.makeText(this, R.string.returnError, Toast.LENGTH_LONG).show();
         }
@@ -282,84 +293,66 @@ public class StartActivity extends AppCompatActivity {
     }
 
     /**
-     * This class is to create the TextRecognizer, called by onActivityResult and passing the requestCode
+     * Called by onActivityResult with the requestCode to create the TextDetector
      * It will put the scanned text output into a single string for the confirm text dialog
      * It builds the mContactFields array of Strings to pass to the next activity
+     * @param mCode - Camera or Gallery Request
+     * @throws IOException
      */
-    private class ReadPhotoTask extends AsyncTask<Void, Void, String> {
-        final Snackbar mLoadingBar;
-        int mCode;
+    void firebaseInBackground(final int mCode) throws IOException {
+        final Snackbar mLoadingBar = Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor),
+                R.string.load,
+                Snackbar.LENGTH_INDEFINITE);
+        Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout) mLoadingBar.getView();
+        TextView tv = (TextView) snack_view.findViewById(android.support.design.R.id.snackbar_text);
+        tv.setGravity(Gravity.CENTER_HORIZONTAL);
+        final ProgressBar indicator = new ProgressBar(StartActivity.this);
+        indicator.getIndeterminateDrawable().setColorFilter(
+                new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY));
+        indicator.setScaleY(0.5f);
+        indicator.setScaleX(0.5f);
+        snack_view.addView(indicator, 1);
+        mLoadingBar.show();
 
-        public ReadPhotoTask(int code) {
-            mLoadingBar = Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor),
-                    R.string.load,
-                    Snackbar.LENGTH_INDEFINITE);
-            Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout) mLoadingBar.getView();
-            TextView tv = (TextView) snack_view.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            final ProgressBar indicator = new ProgressBar(StartActivity.this);
-            indicator.getIndeterminateDrawable().setColorFilter(
-                    new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY));
-            indicator.setScaleY(0.5f);
-            indicator.setScaleX(0.5f);
-            snack_view.addView(indicator, 1);
-
-            mLoadingBar.show();
-            mCode = code;
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
-                bitmap = rotateImageIfRequired(bitmap, StartActivity.this,
-                        checkUri(StartActivity.this, mPhotoUri));
-
-                final Frame frame = (new Frame.Builder()).setBitmap(bitmap).build();
-                final TextRecognizer detector = new TextRecognizer.Builder(StartActivity.this).build();
-                final SparseArray<TextBlock> blocks = detector.detect(frame);
-
-                detector.release();
-                final int sz = getResources().getTextArray(R.array.labels).length;
-                mContactFields = new String[sz];
-                TextBlock blk;
-                final StringBuilder bull = new StringBuilder();
-                if (blocks.size() > 0) {
-                    int contactDex = 0;
-                    for (int dex = 0; dex < blocks.size(); dex++) {
-                        blk = blocks.valueAt(dex);
-                        bull.append(blk.getValue()).append("\n");
-                        for (Text line: blk.getComponents()) {
-                            if (contactDex < sz) mContactFields[contactDex++] = line.getValue();
-                            else mContactFields[sz-1] = mContactFields[sz-1] + "\n" + line.getValue();
-                            //bull.append(line.getValue() + "\n");
-                        }
-                    } //end for loop
-                    //boolean will determine if the app returns to the gallery or camera on retry
-                    mCode = R.string.ocr_success;
-                    //Log.d(TAG, "any text? " + bull.toString());
-                    return bull.toString();
-                } else {
-                    Log.w(TAG, "empty result");
-                    mCode = R.string.no_text;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            if (isCancelled()) return;
-            mLoadingBar.dismiss();
-            Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor), mCode, Snackbar.LENGTH_SHORT).show();
-            if (!TextUtils.isEmpty(s)) {
-                showConfirmDialog(s, mCode == R.string.ocr_success);
-            }
-        }
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
+        bitmap = rotateImageIfRequired(bitmap, StartActivity.this,
+                checkUri(StartActivity.this, mPhotoUri));
+        final FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
+        Task<FirebaseVisionText> result =
+                FirebaseVision.getInstance().getVisionTextDetector().detectInImage(image)
+                        .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+                            @Override
+                            public void onSuccess(FirebaseVisionText firebaseVisionText) {
+                                // Task completed successfully
+                                mLoadingBar.dismiss();
+                                final StringBuilder bull = new StringBuilder();
+                                ArrayList<String> textArray = new ArrayList();
+                                for (FirebaseVisionText.Block block : firebaseVisionText.getBlocks()) {
+                                    String text = block.getText();
+                                    Log.d(TAG, "block text: " + text);
+                                    if (!TextUtils.isEmpty(text)) {
+                                        bull.append(text).append("\n");
+                                        textArray.add(text);
+                                    }
+                                }
+                                Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor), R.string.ocr_success, Snackbar.LENGTH_SHORT).show();
+                                if (!TextUtils.isEmpty(bull.toString())) {
+                                    mContactFields = new String[textArray.size()];
+                                    mContactFields = textArray.toArray(mContactFields);
+                                    showConfirmDialog(bull.toString(), mCode == R.string.ocr_success);
+                                }
+                                bull.setLength(0);
+                            }
+                        })
+                        .addOnFailureListener(
+                                new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // Task failed with an exception
+                                        Log.w(TAG, "empty result");
+                                        Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor), R.string.no_text, Snackbar.LENGTH_SHORT).show();
+                                    }
+                                });
     }
 
 }

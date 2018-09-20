@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
+
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         applicationId "com.mezcode.demo.roloscan.ocrreader"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 2
         versionName "1.5"
     }
@@ -23,14 +24,13 @@ android {
 
 dependencies {
     final supportLibraryVersion = '27.1.1'
-    final firebaseVersion = '16.0.0'
 
     implementation "com.android.support:support-v4:$supportLibraryVersion"
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
     implementation "com.android.support:support-v13:$supportLibraryVersion"
     implementation "com.android.support:design:$supportLibraryVersion"
     implementation "com.android.support:exifinterface:$supportLibraryVersion"
-    implementation "com.google.firebase:firebase-core:$firebaseVersion"
-    implementation "com.google.firebase:firebase-ml-vision:$firebaseVersion"
+    implementation 'com.google.firebase:firebase-core:16.0.3'
+    implementation 'com.google.firebase:firebase-ml-vision:17.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

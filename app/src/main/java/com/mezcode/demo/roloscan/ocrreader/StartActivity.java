@@ -319,7 +319,7 @@ public class StartActivity extends AppCompatActivity {
                 checkUri(StartActivity.this, mPhotoUri));
         final FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
         Task<FirebaseVisionText> result =
-                FirebaseVision.getInstance().getVisionTextDetector().detectInImage(image)
+                FirebaseVision.getInstance().getOnDeviceTextRecognizer().processImage(image)
                         .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
                             @Override
                             public void onSuccess(FirebaseVisionText firebaseVisionText) {
@@ -327,7 +327,7 @@ public class StartActivity extends AppCompatActivity {
                                 mLoadingBar.dismiss();
                                 final StringBuilder bull = new StringBuilder();
                                 ArrayList<String> textArray = new ArrayList();
-                                for (FirebaseVisionText.Block block : firebaseVisionText.getBlocks()) {
+                                for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks()) {
                                     String text = block.getText();
                                     Log.d(TAG, "block text: " + text);
                                     if (!TextUtils.isEmpty(text)) {

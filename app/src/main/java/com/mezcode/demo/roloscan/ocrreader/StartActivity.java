@@ -17,14 +17,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.media.ExifInterface;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,9 +25,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.exifinterface.media.ExifInterface;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
@@ -304,7 +305,7 @@ public class StartActivity extends AppCompatActivity {
                 R.string.load,
                 Snackbar.LENGTH_INDEFINITE);
         Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout) mLoadingBar.getView();
-        TextView tv = (TextView) snack_view.findViewById(android.support.design.R.id.snackbar_text);
+        TextView tv = (TextView) snack_view.findViewById(com.google.android.material.R.id.snackbar_text);
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
         final ProgressBar indicator = new ProgressBar(StartActivity.this);
         indicator.getIndeterminateDrawable().setColorFilter(

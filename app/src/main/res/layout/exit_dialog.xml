@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView android:id="@+id/sheet_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        android:text="@string/returnError"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <LinearLayout android:id="@+id/sheet_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="16dp"
+        android:orientation="horizontal" >
+        <!-- Dialog Button style sets the onClick method to dlg_button -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight=".1" />
+        <ImageButton android:id="@+id/sheet_retry"
+            style="DialogButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/retry"
+            android:onClick="sheetButton"
+            android:src="@drawable/btn_redo"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight=".1" />
+
+        <ImageButton android:id="@+id/sheet_cancel"
+            style="DialogButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@android:string/cancel"
+            android:onClick="sheetButton"
+            android:src="@drawable/btn_done" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight=".1" />
+    </LinearLayout>
+
+</LinearLayout>

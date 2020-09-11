@@ -14,14 +14,17 @@
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/appName"
-        android:supportsRtl = "true"
         android:theme="@style/Theme.AppCompat" >
+
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version"/>
+
+        <!-- Optional: Add it to automatically download ML model to device after
+          your app is installed.-->
         <meta-data
-            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-            android:value="ocr" />
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="barcode,face,ocr,ica"/>
 
         <activity android:name="com.mezcode.demo.roloscan.ocrreader.StartActivity"
             android:screenOrientation="sensorPortrait">

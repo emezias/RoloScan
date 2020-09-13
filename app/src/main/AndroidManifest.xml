@@ -33,7 +33,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mezcode.demo.roloscan.ocrreader.SetContactFieldsActivity"
+        <activity android:name="com.mezcode.demo.roloscan.ocrreader.ScannedCardToContactActivity"
             android:label="@string/label2"
             android:screenOrientation="sensorPortrait"/>
         <provider

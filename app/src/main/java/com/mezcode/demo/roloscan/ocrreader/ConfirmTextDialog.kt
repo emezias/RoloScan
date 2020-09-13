@@ -48,7 +48,8 @@ class ConfirmTextDialog : DialogFragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            dlg_message.text = it.getStringArray(StartActivity.TAG)?.contentToString() ?: "text not found"
+            dlg_message.text = it.getStringArray(StartActivity.TAG)?.toList()?.joinToString(separator = "\n")
+                    ?: "text not found"
             dlg_retry.tag = it.getBoolean(TAG)
         }
         dlg_message.movementMethod = ScrollingMovementMethod()
@@ -69,8 +70,8 @@ class ConfirmTextDialog : DialogFragment(), View.OnClickListener {
         Log.v(StartActivity.TAG, "confirm dialog button ${dlg_message.text}")
         when (btn) {
             dlg_confirm -> {
-                val tnt = Intent(btn.context, SetContactFieldsActivity::class.java)
-                tnt.putExtra(SetContactFieldsActivity.TAG, arguments?.getStringArray(StartActivity.TAG))
+                val tnt = Intent(btn.context, ScannedCardToContactActivity::class.java)
+                tnt.putExtra(ScannedCardToContactActivity.TAG, arguments?.getStringArray(StartActivity.TAG))
                 btn.context.startActivity(tnt)
             }
             dlg_retry -> with(context as StartActivity) {

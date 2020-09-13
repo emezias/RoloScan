@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="labels">
+        <item>Name</item>
+        <item>Phone</item>
+        <item>Email</item>
+        <item>Company</item>
+        <item>Job Title</item>
+        <item>Address</item>
+        <item>I.M.</item>
+        <item>Notes</item>
+        <item>Second Phone</item>
+        <item>Second Email</item>
+    </string-array>
+
+    <integer-array name="spinicons">
+        <item>@drawable/ic_account_circle_white_24dp</item>
+        <item>@drawable/ic_phone_white_24dp</item>
+        <item>@drawable/ic_mail_outline_white_24dp</item>
+        <item>@drawable/ic_business_white_24dp</item>
+        <item>@drawable/ic_title_white_24dp</item>
+        <item>@drawable/ic_location_on_white_24dp</item>
+        <item>@drawable/ic_chat_white_24dp</item>
+        <item>@drawable/ic_note_add_white_24dp</item>
+        <item>@drawable/ic_phone_white_24dp</item>
+        <item>@drawable/ic_mail_outline_white_24dp</item>
+    </integer-array>
+
+    <integer-array name="editFields">
+        <item>@id/cc_edit1</item>
+        <item>@id/cc_edit2</item>
+        <item>@id/cc_edit3</item>
+        <item>@id/cc_edit4</item>
+        <item>@id/cc_edit5</item>
+        <item>@id/cc_edit6</item>
+        <item>@id/cc_edit7</item>
+        <item>@id/cc_edit8</item>
+        <item>@id/cc_edit9</item>
+        <item>@id/cc_edit10</item>
+    </integer-array>
+
+    <integer-array name="spinners">
+        <item>@id/cc_spinner1</item>
+        <item>@id/cc_spinner2</item>
+        <item>@id/cc_spinner3</item>
+        <item>@id/cc_spinner4</item>
+        <item>@id/cc_spinner5</item>
+        <item>@id/cc_spinner6</item>
+        <item>@id/cc_spinner7</item>
+        <item>@id/cc_spinner8</item>
+        <item>@id/cc_spinner9</item>
+        <item>@id/cc_spinner10</item>
+    </integer-array>
+
+    <integer-array name="btn_fields">
+        <item>@id/cc_btn1</item>
+        <item>@id/cc_btn2</item>
+        <item>@id/cc_btn3</item>
+        <item>@id/cc_btn4</item>
+        <item>@id/cc_btn5</item>
+        <item>@id/cc_btn6</item>
+        <item>@id/cc_btn7</item>
+        <item>@id/cc_btn8</item>
+        <item>@id/cc_btn9</item>
+        <item>@id/cc_btn10</item>
+    </integer-array>
+
+</resources>

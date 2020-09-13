@@ -20,17 +20,8 @@
     <string name="copied">Text Copied</string>
     <string name="load">Reading Text</string>
     <string name="share">Share Text</string>
-    <string-array name="labels">
-        <item>Name</item>
-        <item>Phone</item>
-        <item>Email</item>
-        <item>Company</item>
-        <item>Job Title</item>
-        <item>Address</item>
-        <item>I.M.</item>
-        <item>Notes</item>
-        <item>Second Phone</item>
-        <item>Second Email</item>
-    </string-array>
+    <string name="contact_error">A contact must have a name</string>
 
+    
+    <string name="email_regex" translatable="false">\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}\b</string>
 </resources>

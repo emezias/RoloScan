@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="retry">Réessayez</string>
+    <string name="confirm">Créez un contact</string>
+    <string name="label2">Vérifiez le texte et sauvegardez</string>
+    <string name="photo">Prenez une photo</string>
+    <string name="gallery_prompt">Choisissez une photo</string>
+    <string name="permissionHelp">D\'amples permissions sont nécessaires pour utiliser cette application</string>
+    <string name="returnError">Veuillez réessayer. L\'image est manquante</string>
+    <string name="save">Sauvegardez</string>
+    <string name="ocr_success">Scan réussi</string>
+    <string name="no_text">Aucun texte de trouvé</string>
+    <string name="scan2label">Numérisez le texte</string>
+    <string name="copied">Texte copié</string>
+    <string name="share">Partagez le texte</string>
+    <string-array name="labels">
+        <item>Prénom et nom</item>
+        <item>Numéro de téléphone</item>
+        <item>Adresse email</item>
+        <item>Compagnie</item>
+        <item>Profession</item>
+        <item>Adresse</item>
+        <item>Adresse de messagerie électronique (I.M.)s</item>
+        <item>Remarques</item>
+        <item>Numéro de téléphone secondaire</item>
+        <item>Adresse email secondaire</item>
+    </string-array>
+    <string name="startText1">Prenez une photo (d\'une carte de visite)</string>
+    <string name="startText2">ou</string>
+    <string name="startText3">Sélectionner une image à scanner</string>
+    <string name="load">Lecture du texte</string>
+    <string name="makeRequest">Demandez les permissions nécessaires</string>
+    <string name="no_app">Aucune application disponible pour partager votre texte</string>
+    <string name="contact_error">Un contact doit avoir un nom</string>
+
+</resources>

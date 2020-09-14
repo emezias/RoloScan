@@ -29,5 +29,7 @@
     <string name="startText2">ó</string>
     <string name="startText3">Elegir Foto de Galeria</string>
     <string name="load">Leyendo Texto</string>
-
+    <string name="makeRequest">Pedirás Permiso</string>
+    <string name="no_app">No se encontraron aplicaciones para compartir texto</string>
+    <string name="contact_error">un contacto debe tener un nombre</string>
 </resources>

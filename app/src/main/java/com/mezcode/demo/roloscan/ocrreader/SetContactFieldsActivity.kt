@@ -97,7 +97,7 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         super.onOptionsItemSelected(item)
         saveContact(null)
         return true

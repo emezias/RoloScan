@@ -1,229 +1,138 @@
-package com.mezcode.demo.roloscan.ocrreader;
+package com.mezcode.demo.roloscan.ocrreader
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.media.ExifInterface;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.util.Log;
-import android.util.SparseArray;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.vision.Frame;
-import com.google.android.gms.vision.text.Text;
-import com.google.android.gms.vision.text.TextBlock;
-import com.google.android.gms.vision.text.TextRecognizer;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.database.Cursor
+import android.graphics.*
+import android.net.Uri
+import android.os.AsyncTask
+import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import com.google.android.material.snackbar.Snackbar
+import android.text.TextUtils
+import android.util.Log
+import android.util.SparseArray
+import android.view.Gravity
+import android.view.View
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.exifinterface.media.ExifInterface
+import com.google.android.gms.vision.Frame
+import com.google.android.gms.vision.text.TextBlock
+import com.google.android.gms.vision.text.TextRecognizer
+import java.io.File
+import java.io.IOException
 
 /**
  * Created by emezias on 4/20/17.
  * got help from a Tensor Flow sample
  * https://github.com/GoogleCloudPlatform/cloud-vision/blob/master/android/CloudVision/app/src/main/java/com/google/sample/cloudvision/MainActivity.java
  */
+class StartActivity : AppCompatActivity() {
+    val tag = javaClass.simpleName
+    var mPhotoUri: Uri? = null
+    lateinit var mContactFields: Array<String?>
+    lateinit var mDialog: ConfirmTextDialog
 
-public class StartActivity extends AppCompatActivity {
-
-    public static final String TAG = StartActivity.class.getSimpleName();
-    public static final int CAMERA_REQUEST = 9;
-    public static final String FILE_NAME = "RoloScan.jpg";
-    public static final String MIME_TYPE = "text/plain";
-    private static final int GALLERY_REQUEST = 3;
-    Uri mPhotoUri;
-    String[] mContactFields;
-    ConfirmTextDialog mDialog;
-
-    //Permissions logic modeled on cloud vision, but nested
-    //https://github.com/GoogleCloudPlatform/cloud-vision/blob/master/android/CloudVision/
-    public static boolean requestPermission(
-            Activity activity, int requestCode, String... permissions) {
-        boolean granted = true;
-        ArrayList<String> permissionsNeeded = new ArrayList<>();
-
-        for (String s : permissions) {
-            int permissionCheck = ContextCompat.checkSelfPermission(activity, s);
-            boolean hasPermission = (permissionCheck == PackageManager.PERMISSION_GRANTED);
-            granted &= hasPermission;
-            if (!hasPermission) {
-                permissionsNeeded.add(s);
-            }
-        }
-
-        if (granted) {
-            return true;
-        } else {
-            ActivityCompat.requestPermissions(activity,
-                    permissionsNeeded.toArray(new String[permissionsNeeded.size()]),
-                    requestCode);
-            return false;
-        }
-    }
-
-    public static boolean permissionGranted(
-            int requestCode, int permissionCode, int[] grantResults) {
-        return requestCode == permissionCode && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
-    }
-
-    //https://teamtreehouse.com/community/how-to-rotate-images-to-the-correct-orientation-portrait-by-editing-the-exif-data-once-photo-has-been-taken
-    public static Bitmap rotateImageIfRequired(Bitmap img, Context context, Uri selectedImage) throws IOException {
-
-        if (selectedImage.getScheme().equals("content")) {
-            String[] projection = { MediaStore.Images.ImageColumns.ORIENTATION };
-            Cursor c = context.getContentResolver().query(selectedImage, projection, null, null, null);
-            if (c.getCount() > 0 && c.moveToFirst() && c.getColumnCount() > 0) {
-                final int rotation = c.getInt(0);
-                c.close();
-                return rotateImage(img, rotation);
-            }
-        }
-        //ExifInterface ei = new ExifInterface(checkUri(context, selectedImage));
-        InputStream in = context.getContentResolver().openInputStream(selectedImage);
-        ExifInterface ei = new ExifInterface(in);
-
-        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-        Log.d(TAG, "Orientation is: " + orientation);
-
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                return rotateImage(img, 90);
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                return rotateImage(img, 180);
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                return rotateImage(img, 270);
-            default:
-                return img;
-        }
-    }
-
-    private static Bitmap rotateImage(Bitmap img, int degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        return Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
-    }
-
-    public static Uri checkUri(Context context, Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
-            if (cursor.getCount() > 0 && cursor.getColumnCount() > 0) {
-                Log.d(TAG, "found in Media Store");
-                return contentUri;
-            } else {
-                final String path = contentUri.getPath();
-                if ((new File(path)).exists()) return contentUri;
-                else return FileProvider.getUriForFile(context,
-                        context.getApplicationContext().getPackageName() + ".provider",
-                        new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), FILE_NAME));
-            }
-
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
-        final ActionBar actionBar = getSupportActionBar();
+    protected override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_start)
+        val actionBar = supportActionBar
         if (actionBar != null) {
-            actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setLogo(R.drawable.logo);
-            actionBar.setDisplayUseLogoEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true)
+            actionBar.setLogo(R.drawable.logo)
+            actionBar.setDisplayUseLogoEnabled(true)
+        } else {
+            Log.w(tag, "null action bar")
         }
     }
 
-    public void getPhoto(View v) {
-        switch (v.getId()) {
-            case R.id.start_photo:
-                if (requestPermission(this, CAMERA_REQUEST,
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.CAMERA)) {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    mPhotoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider",
-                            new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), FILE_NAME));
-                    //Log.d(TAG, "path? " + mPhotoUri.getPath());
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivityForResult(intent, CAMERA_REQUEST);
-                }
-                break;
-            case R.id.start_gallery:
-                if (requestPermission(this, GALLERY_REQUEST, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, getString(R.string.gallery_prompt)),
-                            GALLERY_REQUEST);
-                }
-                break;
+    fun getPhoto(v: View) {
+        when (v.id) {
+            R.id.start_photo -> if (requestPermission(
+                    this, CAMERA_REQUEST,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA
+                )
+            ) {
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                mPhotoUri = FileProvider.getUriForFile(
+                    this, applicationContext.packageName + ".provider",
+                    File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), FILE_NAME)
+                )
+                //Log.d(TAG, "path? " + mPhotoUri.getPath());
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri)
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                startActivityForResult(intent, CAMERA_REQUEST)
+            }
+            R.id.start_gallery -> if (requestPermission(
+                    this,
+                    GALLERY_REQUEST,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+            ) {
+                val intent = Intent()
+                intent.type = "image/*"
+                intent.action = Intent.ACTION_GET_CONTENT
+                startActivityForResult(
+                    Intent.createChooser(intent, getString(R.string.gallery_prompt)),
+                    GALLERY_REQUEST
+                )
+            }
         }
     }
 
-    public void dlg_button(View btn) {
+    fun dlg_button(btn: View) {
         //set in dialog layout xml
-        switch (btn.getId()) {
-            case R.id.dlg_confirm:
-                final Intent tnt = new Intent(getApplicationContext(), SetContactFieldsActivity.class);
-                tnt.putExtra(SetContactFieldsActivity.TAG, mContactFields);
-                startActivity(tnt);
-                break;
-            case R.id.dlg_retry:
-                if ((Boolean) btn.getTag()) {
-                    getPhoto(findViewById(R.id.start_photo));
-                } else {
-                    getPhoto(findViewById(R.id.start_gallery));
-                }
-                break;
-            case R.id.dlg_clipboard:
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText(getString(R.string.scan2label),
-                        ((TextView) mDialog.getView().findViewById(R.id.dlg_message)).getText());
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.dlg_share:
-                final Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT,
-                        ((TextView) mDialog.getView().findViewById(R.id.dlg_message)).getText());
-                sendIntent.setType(MIME_TYPE);
-                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.scan2label)));
-                break;
+        when (btn.id) {
+            R.id.dlg_confirm -> {
+                val tnt = Intent(applicationContext, SetContactFieldsActivity::class.java)
+                tnt.putExtra(SetContactFieldsActivity.Companion.TAG, mContactFields)
+                startActivity(tnt)
+            }
+            R.id.dlg_retry -> if (btn.tag as Boolean) {
+                getPhoto(findViewById(R.id.start_photo))
+            } else {
+                getPhoto(findViewById(R.id.start_gallery))
+            }
+            R.id.dlg_clipboard -> {
+                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip: ClipData = ClipData.newPlainText(
+                    getString(R.string.scan2label),
+                    (mDialog.view?.findViewById(R.id.dlg_message) as TextView).text
+                )
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show()
+            }
+            R.id.dlg_share -> {
+                val sendIntent = Intent()
+                sendIntent.action = Intent.ACTION_SEND
+                sendIntent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    (mDialog.view?.findViewById(R.id.dlg_message) as TextView).text
+                )
+                sendIntent.type = MIME_TYPE
+                startActivity(
+                    Intent.createChooser(
+                        sendIntent,
+                        resources.getText(R.string.scan2label)
+                    )
+                )
+            }
         }
-        mDialog.dismiss();
+        mDialog.dismiss()
     }
 
     /**
@@ -233,18 +142,20 @@ public class StartActivity extends AppCompatActivity {
      * @param resultCode
      * @param data
      */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "on activity result? " + requestCode + " result " + resultCode + " data? " + (data != null));
+    protected override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d(
+            TAG,
+            "on activity result? " + requestCode + " result " + resultCode + " data? " + (data != null)
+        )
         //Uri photoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", getCameraFile());
         if (resultCode == RESULT_OK) {
             if (data != null && data.getData() != null) {
-                mPhotoUri = data.getData();
+                mPhotoUri = data.getData()
             }
-            new ReadPhotoTask(requestCode).execute();
+            ReadPhotoTask(requestCode).execute()
         } else {
-            Toast.makeText(this, R.string.returnError, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.returnError, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -253,32 +164,29 @@ public class StartActivity extends AppCompatActivity {
      * @param displayText
      * @param mIsPhoto
      */
-    void showConfirmDialog(String displayText, boolean mIsPhoto) {
-        mDialog = ConfirmTextDialog.newInstance(displayText, mIsPhoto);
-        mDialog.show(getSupportFragmentManager(), "show");
+    fun showConfirmDialog(displayText: String?, mIsPhoto: Boolean) {
+        mDialog = ConfirmTextDialog.Companion.newInstance(displayText, mIsPhoto)
+        mDialog.show(supportFragmentManager, "show")
     }
 
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case CAMERA_REQUEST:
-                if (permissionGranted(requestCode, CAMERA_REQUEST, grantResults)) {
-                    getPhoto(findViewById(R.id.start_photo));
-                } else {
-                    Toast.makeText(this, R.string.permissionHelp, Toast.LENGTH_LONG).show();
-                }
-                break;
-            case GALLERY_REQUEST:
-                if (permissionGranted(requestCode, GALLERY_REQUEST, grantResults)) {
-                    getPhoto(findViewById(R.id.start_gallery));
-                } else {
-                    Toast.makeText(this, R.string.permissionHelp, Toast.LENGTH_LONG).show();
-                }
-                break;
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            CAMERA_REQUEST -> if (permissionGranted(requestCode, CAMERA_REQUEST, grantResults)) {
+                getPhoto(findViewById(R.id.start_photo))
+            } else {
+                Toast.makeText(this, R.string.permissionHelp, Toast.LENGTH_LONG).show()
+            }
+            GALLERY_REQUEST -> if (permissionGranted(requestCode, GALLERY_REQUEST, grantResults)) {
+                getPhoto(findViewById(R.id.start_gallery))
+            } else {
+                Toast.makeText(this, R.string.permissionHelp, Toast.LENGTH_LONG).show()
+            }
         }
-
     }
 
     /**
@@ -286,80 +194,186 @@ public class StartActivity extends AppCompatActivity {
      * It will put the scanned text output into a single string for the confirm text dialog
      * It builds the mContactFields array of Strings to pass to the next activity
      */
-    private class ReadPhotoTask extends AsyncTask<Void, Void, String> {
-        final Snackbar mLoadingBar;
-        int mCode;
+    @SuppressLint("StaticFieldLeak")
+    private inner class ReadPhotoTask(code: Int) : AsyncTask<Void?, Void?, String?>() {
+        val mLoadingBar: Snackbar = Snackbar.make(
+            this@StartActivity.findViewById(R.id.snack_anchor),
+            R.string.load,
+            Snackbar.LENGTH_INDEFINITE
+        )
+        var mCode: Int
 
-        public ReadPhotoTask(int code) {
-            mLoadingBar = Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor),
-                    R.string.load,
-                    Snackbar.LENGTH_INDEFINITE);
-            Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout) mLoadingBar.getView();
-            TextView tv = (TextView) snack_view.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            final ProgressBar indicator = new ProgressBar(StartActivity.this);
-            indicator.getIndeterminateDrawable().setColorFilter(
-                    new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY));
-            indicator.setScaleY(0.5f);
-            indicator.setScaleX(0.5f);
-            snack_view.addView(indicator, 1);
-
-            mLoadingBar.show();
-            mCode = code;
+        init {
+            val snackView: Snackbar.SnackbarLayout = mLoadingBar.view as Snackbar.SnackbarLayout
+            /*val tv: TextView =
+                snackView.findViewById(android.R.id.snackbar_text) as TextView
+            tv.gravity = Gravity.CENTER_HORIZONTAL*/
+            val indicator = ProgressBar(this@StartActivity)
+            indicator.indeterminateDrawable.colorFilter =
+                PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY)
+            indicator.scaleY = 0.5f
+            indicator.scaleX = 0.5f
+            snackView.addView(indicator, 1)
+            mLoadingBar.show()
+            mCode = code
         }
 
-        @Override
-        protected String doInBackground(Void... params) {
+        override fun onPostExecute(s: String?) {
+            super.onPostExecute(s)
+            if (isCancelled) return
+            mLoadingBar.dismiss()
+            Snackbar.make(
+                this@StartActivity.findViewById(R.id.snack_anchor),
+                mCode,
+                Snackbar.LENGTH_SHORT
+            ).show()
+            if (!TextUtils.isEmpty(s)) {
+                showConfirmDialog(s, mCode == R.string.ocr_success)
+            }
+        }
+
+        override fun doInBackground(vararg params: Void?): String? {
             try {
-
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mPhotoUri);
-                bitmap = rotateImageIfRequired(bitmap, StartActivity.this,
-                        checkUri(StartActivity.this, mPhotoUri));
-
-                final Frame frame = (new Frame.Builder()).setBitmap(bitmap).build();
-                final TextRecognizer detector = new TextRecognizer.Builder(StartActivity.this).build();
-                final SparseArray<TextBlock> blocks = detector.detect(frame);
-
-                detector.release();
-                final int sz = getResources().getTextArray(R.array.labels).length;
-                mContactFields = new String[sz];
-                TextBlock blk;
-                final StringBuilder bull = new StringBuilder();
+                var bitmap: Bitmap =
+                    MediaStore.Images.Media.getBitmap(contentResolver, mPhotoUri)
+                bitmap = rotateImageIfRequired(
+                    bitmap, this@StartActivity,
+                    checkUri(this@StartActivity, mPhotoUri)
+                )
+                val frame = Frame.Builder().setBitmap(bitmap).build()
+                val detector = TextRecognizer.Builder(this@StartActivity).build()
+                val blocks: SparseArray<TextBlock> = detector.detect(frame)
+                detector.release()
+                val sz: Int = resources.getTextArray(R.array.labels).size
+                mContactFields = arrayOfNulls(sz)
+                var blk: TextBlock
+                val bull = StringBuilder()
                 if (blocks.size() > 0) {
-                    int contactDex = 0;
-                    for (int dex = 0; dex < blocks.size(); dex++) {
-                        blk = blocks.valueAt(dex);
-                        bull.append(blk.getValue()).append("\n");
-                        for (Text line: blk.getComponents()) {
-                            if (contactDex < sz) mContactFields[contactDex++] = line.getValue();
-                            else mContactFields[sz-1] = mContactFields[sz-1] + "\n" + line.getValue();
+                    var contactDex = 0
+                    for (dex in 0 until blocks.size()) {
+                        blk = blocks.valueAt(dex)
+                        bull.append(blk.value).append("\n")
+                        for (line in blk.components) {
+                            if (contactDex < sz) mContactFields[contactDex++] =
+                                line.value else mContactFields[sz - 1] = """
+     ${mContactFields[sz - 1]}
+     ${line.value}
+     """.trimIndent()
                             //bull.append(line.getValue() + "\n");
                         }
                     } //end for loop
                     //boolean will determine if the app returns to the gallery or camera on retry
-                    mCode = R.string.ocr_success;
+                    mCode = R.string.ocr_success
                     //Log.d(TAG, "any text? " + bull.toString());
-                    return bull.toString();
+                    return bull.toString()
                 } else {
-                    Log.w(TAG, "empty result");
-                    mCode = R.string.no_text;
+                    Log.w(TAG, "empty result")
+                    mCode = R.string.no_text
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            if (isCancelled()) return;
-            mLoadingBar.dismiss();
-            Snackbar.make(StartActivity.this.findViewById(R.id.snack_anchor), mCode, Snackbar.LENGTH_SHORT).show();
-            if (!TextUtils.isEmpty(s)) {
-                showConfirmDialog(s, mCode == R.string.ocr_success);
-            }
+            return null
         }
     }
 
+    companion object {
+        val TAG = StartActivity::class.java.simpleName
+        const val CAMERA_REQUEST = 9
+        const val FILE_NAME = "RoloScan.jpg"
+        const val MIME_TYPE = "text/plain"
+        private const val GALLERY_REQUEST = 3
+
+        //Permissions logic modeled on cloud vision, but nested
+        //https://github.com/GoogleCloudPlatform/cloud-vision/blob/master/android/CloudVision/
+        fun requestPermission(
+            activity: Activity, requestCode: Int, vararg permissions: String
+        ): Boolean {
+            var granted = true
+            val permissionsNeeded = ArrayList<String>()
+            for (s in permissions) {
+                val permissionCheck: Int = ContextCompat.checkSelfPermission(activity, s)
+                val hasPermission = permissionCheck == PackageManager.PERMISSION_GRANTED
+                granted = granted and hasPermission
+                if (!hasPermission) {
+                    permissionsNeeded.add(s)
+                }
+            }
+            return if (granted) {
+                true
+            } else {
+                ActivityCompat.requestPermissions(
+                    activity,
+                    permissionsNeeded.toTypedArray(),
+                    requestCode
+                )
+                false
+            }
+        }
+
+        fun permissionGranted(
+            requestCode: Int, permissionCode: Int, grantResults: IntArray
+        ): Boolean {
+            return requestCode == permissionCode && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+        }
+
+        //https://teamtreehouse.com/community/how-to-rotate-images-to-the-correct-orientation-portrait-by-editing-the-exif-data-once-photo-has-been-taken
+        @Throws(IOException::class)
+        fun rotateImageIfRequired(img: Bitmap, context: Context, selectedImage: Uri?): Bitmap {
+            if (selectedImage!!.scheme == "content") {
+                val projection = arrayOf<String>(MediaStore.Images.ImageColumns.ORIENTATION)
+                val c = context.contentResolver.query(selectedImage, projection, null, null, null)
+                if (c!!.count > 0 && c.moveToFirst() && c.columnCount > 0) {
+                    val rotation = c.getInt(0)
+                    c.close()
+                    return rotateImage(img, rotation)
+                }
+            }
+            //ExifInterface ei = new ExifInterface(checkUri(context, selectedImage));
+            val inStream = context.contentResolver.openInputStream(selectedImage)
+            if (inStream != null) {
+                val ei = ExifInterface(inStream)
+                val orientation: Int =
+                    ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+                Log.d(TAG, "Orientation is: $orientation")
+                return when (orientation) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(img, 90)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(img, 180)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(img, 270)
+                    else -> img
+                }
+            }
+            return img
+        }
+
+        private fun rotateImage(img: Bitmap, degree: Int): Bitmap {
+            val matrix = Matrix()
+            matrix.postRotate(degree.toFloat())
+            return Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
+        }
+
+        fun checkUri(context: Context, contentUri: Uri?): Uri? {
+            var cursor: Cursor? = null
+            return try {
+                val proj = arrayOf<String>(MediaStore.Images.Media.DATA)
+                cursor = context.contentResolver.query(contentUri!!, proj, null, null, null)
+                if (cursor!!.count > 0 && cursor.columnCount > 0) {
+                    Log.d(TAG, "found in Media Store")
+                    contentUri
+                } else {
+                    val path = contentUri.path
+                    if (File(path).exists()) contentUri else FileProvider.getUriForFile(
+                        context,
+                        context.applicationContext.packageName + ".provider",
+                        File(
+                            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                            FILE_NAME
+                        )
+                    )
+                }
+            } finally {
+                cursor?.close()
+            }
+        }
+    }
 }

@@ -13,6 +13,9 @@
     <string name="scan2label">Escaneo</string>
     <string name="copied">Texto Copiado</string>
     <string name="share">Compartir Texto</string>
+    <string name="makeRequest">Pedir permiso</string>
+    <string name="no_app">No se encontraron aplicaciones</string>
+    <string name="contact_error">Se requiere el nombre</string>
     <string-array name="labels">
         <item>Nombre</item>
         <item>Telefono</item>

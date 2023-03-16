@@ -18,6 +18,6 @@ class EditButton(private val mXButton: ImageButton) : TextWatcher {
     }
 
     override fun afterTextChanged(s: Editable) {
-        if (s.length > 0) mXButton.isEnabled = true else mXButton.isEnabled = false
+        mXButton.isEnabled = s.isNotEmpty()
     }
 }

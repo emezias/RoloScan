@@ -21,7 +21,7 @@ import com.mezcode.demo.roloscan.ocrreader.databinding.ActivityCreateContactBind
 class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private lateinit var contactFields: MutableList<String>
-    private lateinit var spinDexes: Map<String, Int>
+    private lateinit var spinDexes: Map<String, Utils.SpinnerIndex?>
     //parallel arrays used to populate the screen with the scanned text
     private lateinit var editFields: Array<EditText>
     private lateinit var btn_fields: Array<ImageButton>
@@ -55,7 +55,7 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
         }
 
         //map value from the scanned text to the contact field types
-        spinDexes = Utils.guessIndices(applicationContext, contactFields.toList())
+        spinDexes = Utils.guessIndices(contactFields.toList())
     }
 
     /**
@@ -109,10 +109,11 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
 
             val textToShow = spinDexes.keys.elementAtOrNull(i)
             textToShow?.let {
+                val spinnerIndex = spinDexes[textToShow]
                 button.isEnabled = true
                 contactFields.remove(textToShow)
                 editText.setText(textToShow)
-                setSpinner(spinner, textToShow)
+                setSpinner(spinner, button, textToShow)
             } ?: {
                 // no text for this row of spinner/edit text/button
                 button.isEnabled = false
@@ -121,11 +122,12 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
         } //end for loop, text fields that matched contact types are set, text listeners enabled
     }
 
-    private fun setSpinner(spinner: Spinner, mappedValue: String) {
+    private fun setSpinner(spinner: Spinner, button: ImageButton, mappedValue: String) {
         val spinnerIndex = spinDexes[mappedValue]
         if (spinnerIndex != null) {
-            spinner.setSelection(spinnerIndex)
+            spinner.setSelection(spinnerIndex.dex)
             spinner.tag = spinnerIndex
+
         } else {
             spinner.tag = null
         }

@@ -20,12 +20,12 @@ import androidx.fragment.app.DialogFragment
 class ConfirmTextDialog : DialogFragment(), View.OnClickListener {
     companion object {
         val TAG = ConfirmTextDialog::class.simpleName
-        fun newInstance(displayText: Array<String>, isPhoto: Boolean): ConfirmTextDialog {
+        fun newInstance(displayText: List<String>, isPhoto: Boolean): ConfirmTextDialog {
             val fragment = ConfirmTextDialog()
             val args = Bundle()
             with (args) {
                 putBoolean(TAG, isPhoto)
-                putStringArray(StartActivity.TAG, displayText)
+                putStringArray(StartActivity.TAG, displayText.toTypedArray())
             }
             fragment.arguments = args
             return fragment

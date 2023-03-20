@@ -3,6 +3,7 @@ package com.mezcode.demo.roloscan.ocrreader
 import android.Manifest
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -19,10 +20,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
-import com.mezcode.demo.roloscan.ocrreader.Utils.getPathForProvider
-import com.mezcode.demo.roloscan.ocrreader.Utils.scanImage
 import com.mezcode.demo.roloscan.ocrreader.Utils.showSnackbar
 import kotlinx.coroutines.launch
 import java.io.File
@@ -35,7 +36,7 @@ import java.io.File
  * This is the main class of the demo project, it shows 2 buttons
  * The user can take a photo of some text or choose a photo on the device
  */
-class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback, Utils.RoloMLKit {
+class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
     companion object {
         val TAG = StartActivity::class.simpleName
         const val FILE_NAME = "RoloScan"
@@ -48,6 +49,7 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
         arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA)
     }
+    lateinit var viewModel: OCRViewModel
     var mPhotoUri: Uri? = null
     lateinit var mDialog: ConfirmTextDialog
     private var galleryRequest = false
@@ -59,12 +61,12 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
-
+        viewModel = OCRViewModel(contentResolver)
+        setUpStateFlow()
         startGallery = findViewById(R.id.start_gallery)
         startPhoto = findViewById(R.id.start_photo)
         progressBar = findViewById(R.id.start_progress)
         anchor = findViewById(R.id.snack_anchor)
-        //FirebaseApp.initializeApp(applicationContext)
         supportActionBar?.apply {
             setDisplayShowHomeEnabled(true)
             setLogo(R.drawable.logo)
@@ -95,7 +97,7 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
             //now call the image processing
             Log.v(TAG, "user selected ${mPhotoUri?.path}")
             //end the coroutine if the user leaves the activity
-            lifecycleScope.launch { scanImage(this@StartActivity, mPhotoUri, galleryRequest) }
+            viewModel.scanImageForText(mPhotoUri, galleryRequest)
         } else {
             showSnackbar(anchor, R.string.returnError)
         }
@@ -118,16 +120,27 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
     }
 
     //RoloTextImage interface implementation, get scan results in front of the user
-    override val ctx: Context
-        get() = applicationContext
-
-    override fun handleError(resourceString: Int) {
-        showSnackbar(anchor, resourceString)
+    private fun setUpStateFlow() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                Log.d(TAG, "call to collect viewmodel flow")
+                viewModel.myUiState.collect {
+                    when(it) {
+                        is OCRViewState.Success -> {
+                            showConfirmDialog(it.scannedTextFields)
+                        }
+                        is OCRViewState.Loading -> {
+                            Log.d(TAG, "Loading state")
+                        }
+                        is OCRViewState.Error -> {
+                            showSnackbar(anchor, it.errorString ?: R.string.retry)
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    override fun handleScanText(resultText: Array<String>) {
-        showConfirmDialog(resultText)
-    }
 
     /**
      * This method gets a file URI from the Provider service and opens a camera app with it
@@ -199,9 +212,9 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
      * @param displayText
      * @param mIsPhoto
      */
-    private fun showConfirmDialog(displayText: Array<String>) {
+    private fun showConfirmDialog(displayText: List<String>) {
         mDialog = ConfirmTextDialog.newInstance(displayText, galleryRequest)
-        mDialog.show(supportFragmentManager, "showConfirmDialog")
+        mDialog.show(supportFragmentManager, null)
         progressBar.visibility = View.GONE
     }
 

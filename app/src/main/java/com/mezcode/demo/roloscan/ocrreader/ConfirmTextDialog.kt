@@ -7,55 +7,47 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import com.mezcode.demo.roloscan.ocrreader.databinding.DialogConfirmBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Created by emezias on 4/22/17.
  * This class shows a confirmation the user to check scanned text for accuracy
  * The user can retry, create a contact record, share the text or copy to the pasteboard
  */
+@AndroidEntryPoint
 class ConfirmTextDialog : DialogFragment(), View.OnClickListener {
-    companion object {
-        val TAG = ConfirmTextDialog::class.simpleName
-        fun newInstance(displayText: List<String>, isPhoto: Boolean): ConfirmTextDialog {
-            val fragment = ConfirmTextDialog()
-            val args = Bundle()
-            with (args) {
-                putBoolean(TAG, isPhoto)
-                putStringArray(StartActivity.TAG, displayText.toTypedArray())
-            }
-            fragment.arguments = args
-            return fragment
-        }
-    }
-
-    lateinit var messageTxt: TextView
+    private lateinit var binding: DialogConfirmBinding
+    private val viewModel: OCRViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment, most of the layout is gone, to be set visible based on args
-        return inflater.inflate(R.layout.dialog_confirm, container, false)
+        binding = DialogConfirmBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        messageTxt = view.findViewById<TextView>(R.id.dlg_message)
-        val retryButton = view.findViewById<ImageButton>(R.id.dlg_retry)
-        arguments?.let {
-            messageTxt.text = it.getStringArray(StartActivity.TAG)?.toList()?.joinToString(separator = "\n")
-                    ?: "text not found"
-            retryButton.tag = it.getBoolean(TAG)
+        with(binding) {
+            dlgMessage.text = viewModel.scannedTextCache.joinToString(separator = "\n")
+            dlgMessage.movementMethod = ScrollingMovementMethod()
+            dlgRetry.setOnClickListener(this@ConfirmTextDialog)
+            dlgConfirm.setOnClickListener(this@ConfirmTextDialog)
+            dlgShare.setOnClickListener(this@ConfirmTextDialog)
+            dlgClipboard.setOnClickListener(this@ConfirmTextDialog)
         }
-        messageTxt.movementMethod = ScrollingMovementMethod()
         isCancelable = true
-
-        view.findViewById<ImageButton>(R.id.dlg_confirm).setOnClickListener(this)
-        retryButton.setOnClickListener(this)
-        view.findViewById<ImageButton>(R.id.dlg_clipboard).setOnClickListener(this)
-        view.findViewById<ImageButton>(R.id.dlg_share).setOnClickListener(this)
     }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        dismiss()
+    }
+
+
 
     /**
      * Fragment OnClickListener for 4 buttons
@@ -63,15 +55,15 @@ class ConfirmTextDialog : DialogFragment(), View.OnClickListener {
      * Each button uses the button view context which can't be null
      */
     override fun onClick(btn: View) {
-        Log.v(StartActivity.TAG, "confirm dialog button ${messageTxt.text}")
+        Log.v(tag, "confirm dialog button ${binding.dlgMessage.text}")
         when (btn.id) {
             R.id.dlg_confirm -> {
                 val tnt = Intent(btn.context, SetContactFieldsActivity::class.java)
-                tnt.putExtra(SetContactFieldsActivity.TAG, arguments?.getStringArray(StartActivity.TAG))
+                tnt.putExtra(SetContactFieldsActivity.TAG, viewModel.scannedTextCache.toTypedArray())
                 btn.context.startActivity(tnt)
             }
             R.id.dlg_retry -> with(context as StartActivity) {
-                if (btn.tag as Boolean) {
+                if (viewModel.galleryRequest) {
                     this.getPhoto(this.startGallery)
                 } else {
                     this.getPhoto(startPhoto)
@@ -79,14 +71,14 @@ class ConfirmTextDialog : DialogFragment(), View.OnClickListener {
             }
             R.id.dlg_clipboard -> {
                 val clipboard = btn.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText(getString(R.string.scan2label), messageTxt.text)
-                Log.v(StartActivity.TAG, "confirm dialog clip ${messageTxt.text}")
+                val clip = ClipData.newPlainText(getString(R.string.scan2label), binding.dlgMessage.text)
+                Log.v(StartActivity.TAG, "confirm dialog clip ${binding.dlgMessage.text}")
                 clipboard.setPrimaryClip(clip)
                 Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show()
             }
             R.id.dlg_share -> {
                 val intent = Intent(Intent.ACTION_SEND)
-                intent.putExtra(Intent.EXTRA_TEXT, messageTxt.text)
+                intent.putExtra(Intent.EXTRA_TEXT, binding.dlgMessage.text)
                 intent.type = ClipDescription.MIMETYPE_TEXT_PLAIN
                 val chooser = Intent.createChooser(intent, resources.getString(R.string.share))
                 // Verify the intent will resolve to at least one activity

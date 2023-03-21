@@ -99,7 +99,7 @@ object Utils {
         if (matrix != null) {
             return InputImage.fromBitmap(Bitmap.createBitmap(bitmap!!, 0, 0, bitmap.width, bitmap.height, matrix, true), 0)
         }
-        return bitmap?.let { InputImage.fromBitmap(it, 0) };
+        return bitmap?.let { InputImage.fromBitmap(it, 0) }
 
     }
 
@@ -126,7 +126,7 @@ object Utils {
     }
 
 
-    suspend fun scanImage(callbacks: RoloMLKit, imageToScan: Uri?, galleryRequest: Boolean) = withContext(Dispatchers.Default) {
+    suspend fun scanImage(callbacks: RoloMLKit, imageToScan: Uri?) = withContext(Dispatchers.Default) {
         if (imageToScan == null) return@withContext
         val image = loadImage(callbacks.resolver, imageToScan)
         if (image == null) {
@@ -174,17 +174,17 @@ object Utils {
             .toRegex().matches(this)
     //ouch... this regex is kind of a wild one
 
-    enum class SpinnerIndex(val dex: Int, val key: String, val drawableResource: Int) {
-        IND_NAME(0, ContactsContract.Intents.Insert.NAME, R.drawable.ic_account_circle_white_24dp),
-        IND_PHONE(1, ContactsContract.Intents.Insert.PHONE_ISPRIMARY, R.drawable.ic_phone_white_24dp),
-        IND_EMAIL(2, ContactsContract.Intents.Insert.EMAIL_ISPRIMARY, R.drawable.ic_mail_outline_white_24dp),
-        IND_TITLE(3, ContactsContract.Intents.Insert.JOB_TITLE, R.drawable.ic_title_white_24dp),
-        IND_COMPANY(4, ContactsContract.Intents.Insert.COMPANY, R.drawable.ic_business_white_24dp),
-        IND_ADDRESS(5, ContactsContract.Intents.Insert.POSTAL, R.drawable.ic_location_on_white_24dp),
-        IND_IM(6, ContactsContract.Intents.Insert.IM_HANDLE, R.drawable.ic_chat_white_24dp),
-        IND_PHONE2(7, ContactsContract.Intents.Insert.SECONDARY_PHONE, R.drawable.ic_phone_white_24dp),
-        IND_EMAIL2(8, ContactsContract.Intents.Insert.SECONDARY_EMAIL, R.drawable.ic_mail_outline_white_24dp),
-        IND_NOTES(9, ContactsContract.Intents.Insert.NOTES, R.drawable.ic_note_add_white_24dp)
+    enum class SpinnerIndex(val dex: Int, val key: String) {
+        IND_NAME(0, ContactsContract.Intents.Insert.NAME),
+        IND_PHONE(1, ContactsContract.Intents.Insert.PHONE_ISPRIMARY),
+        IND_EMAIL(2, ContactsContract.Intents.Insert.EMAIL_ISPRIMARY),
+        IND_TITLE(3, ContactsContract.Intents.Insert.JOB_TITLE),
+        IND_COMPANY(4, ContactsContract.Intents.Insert.COMPANY),
+        IND_ADDRESS(5, ContactsContract.Intents.Insert.POSTAL),
+        IND_IM(6, ContactsContract.Intents.Insert.IM_HANDLE),
+        IND_PHONE2(7, ContactsContract.Intents.Insert.SECONDARY_PHONE),
+        IND_EMAIL2(8, ContactsContract.Intents.Insert.SECONDARY_EMAIL),
+        IND_NOTES(9, ContactsContract.Intents.Insert.NOTES)
     }
 
     /* This method returns the spinner indices for the ScannedCardToContactActivity

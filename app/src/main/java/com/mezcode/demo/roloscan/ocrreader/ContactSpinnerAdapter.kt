@@ -3,9 +3,6 @@ package com.mezcode.demo.roloscan.ocrreader
 import android.content.Context
 import android.database.DataSetObserver
 import android.graphics.drawable.Drawable
-import android.text.TextUtils
-import android.util.Log
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +16,11 @@ import androidx.core.content.res.ResourcesCompat
  * Once an item is set, it cannot be reused
  */
 class ContactSpinnerAdapter(ctx: Context) : SpinnerAdapter {
-    companion object {
-        val TAG = ContactSpinnerAdapter::class.java.simpleName
+    val TAG = ContactSpinnerAdapter::class.java.simpleName
 
-        lateinit var sValueList: Array<String>
-        lateinit var spinIcons: Set<Drawable?>
-    }
+    lateinit var sValueList: Array<String>
+    lateinit var spinIcons: Set<Drawable?>
+
     init {
         val rsrcs = ctx.resources
         val thm = ctx.theme

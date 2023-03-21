@@ -4,9 +4,11 @@ import android.content.ContentResolver
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * OCR view model
@@ -15,9 +17,14 @@ import kotlinx.coroutines.launch
  * This class replaced the AsyncTask with coroutines
  * It holds any scanned text
  */
-class OCRViewModel(private val contentResolver: ContentResolver) : ViewModel(), Utils.RoloMLKit {
+@HiltViewModel
+class OCRViewModel @Inject constructor(private val contentResolver: ContentResolver): ViewModel(), Utils.RoloMLKit {
+
     private val _myUiState = MutableStateFlow<OCRViewState>(OCRViewState.Loading)
     val myUiState: StateFlow<OCRViewState> = _myUiState
+
+    lateinit var scannedTextCache : List<String>
+    var galleryRequest = false
 
     override val resolver: ContentResolver
         get() = contentResolver
@@ -27,11 +34,12 @@ class OCRViewModel(private val contentResolver: ContentResolver) : ViewModel(), 
     }
 
     override fun handleScanText(resultText: List<String>) {
+        scannedTextCache = resultText
         _myUiState.value = OCRViewState.Success(resultText)
     }
-     fun scanImageForText(imageToScan: Uri?, galleryRequest: Boolean) {
+     fun scanImageForText(imageToScan: Uri?) {
          viewModelScope.launch {
-             Utils.scanImage(this@OCRViewModel, imageToScan, galleryRequest)
+             Utils.scanImage(this@OCRViewModel, imageToScan)
          }
      }
 

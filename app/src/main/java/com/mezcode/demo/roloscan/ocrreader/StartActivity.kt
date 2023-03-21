@@ -3,8 +3,6 @@ package com.mezcode.demo.roloscan.ocrreader
 import android.Manifest
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.ContentResolver
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
@@ -15,6 +13,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -25,6 +24,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
 import com.mezcode.demo.roloscan.ocrreader.Utils.showSnackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -36,6 +36,7 @@ import java.io.File
  * This is the main class of the demo project, it shows 2 buttons
  * The user can take a photo of some text or choose a photo on the device
  */
+@AndroidEntryPoint
 class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
     companion object {
         val TAG = StartActivity::class.simpleName
@@ -49,10 +50,9 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
         arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA)
     }
-    lateinit var viewModel: OCRViewModel
+    private val viewModel: OCRViewModel by viewModels()
     var mPhotoUri: Uri? = null
-    lateinit var mDialog: ConfirmTextDialog
-    private var galleryRequest = false
+
     lateinit var startGallery: View
     lateinit var startPhoto: View
     private lateinit var progressBar: ProgressBar
@@ -61,7 +61,7 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
-        viewModel = OCRViewModel(contentResolver)
+
         setUpStateFlow()
         startGallery = findViewById(R.id.start_gallery)
         startPhoto = findViewById(R.id.start_photo)
@@ -97,7 +97,7 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
             //now call the image processing
             Log.v(TAG, "user selected ${mPhotoUri?.path}")
             //end the coroutine if the user leaves the activity
-            viewModel.scanImageForText(mPhotoUri, galleryRequest)
+            viewModel.scanImageForText(mPhotoUri)
         } else {
             showSnackbar(anchor, R.string.returnError)
         }
@@ -185,11 +185,11 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
                         ActivityCompat.requestPermissions(this,
                                 PERMISSIONS_REQUESTED,
                                 CAMERA_REQUEST)
-                        galleryRequest = false
+                        viewModel.galleryRequest = false
                     }
                 } //end when, end start photo
             startGallery -> {
-                galleryRequest = true
+                viewModel.galleryRequest = true
                 Log.d(TAG, "on activity result? launch here")
                 openImagePicker(this)
             }
@@ -213,10 +213,15 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
      * @param mIsPhoto
      */
     private fun showConfirmDialog(displayText: List<String>) {
-        mDialog = ConfirmTextDialog.newInstance(displayText, galleryRequest)
-        mDialog.show(supportFragmentManager, null)
+        // TODO fix hack for dialog replay
+        val tmp = supportFragmentManager.findFragmentByTag("ConfirmTextDialog")
+        if (tmp != null) {
+            (tmp as ConfirmTextDialog).dismiss()
+        }
+        ConfirmTextDialog().show(supportFragmentManager, "ConfirmTextDialog")
         progressBar.visibility = View.GONE
     }
+
 
     /**
      * This method looks for a shared external directory

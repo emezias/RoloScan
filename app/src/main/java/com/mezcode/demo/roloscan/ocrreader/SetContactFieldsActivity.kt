@@ -3,24 +3,28 @@ package com.mezcode.demo.roloscan.ocrreader
 import android.content.Intent
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.mezcode.demo.roloscan.ocrreader.databinding.ActivityCreateContactBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Created by emezias on 4/20/17.
  * This class takes the scanned text as an extra
  * It displays each line of text in its own edit text
  * The ContactSpinnerAdapter getIndices code applies logic to set the correct spinner value
+ * TBH this logic isn't very useful - it is intended to demonstrate the ContactsContract
+ * Need to update to use 'query' params in the Manifest
  */
+@AndroidEntryPoint
 class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+    private val viewModel: OCRViewModel by viewModels()
 
-    private lateinit var contactFields: MutableList<String>
     private lateinit var spinDexes: Map<String, Utils.SpinnerIndex?>
     //parallel arrays used to populate the screen with the scanned text
     private lateinit var editFields: Array<EditText>
@@ -37,12 +41,15 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
         binding = ActivityCreateContactBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        contactFields = (intent.extras?.getStringArray(TAG) as Array<String>).toMutableList()
-        //scanned text
+        val contactFields = (intent.extras?.getStringArray(TAG) as Array<String>).toMutableList()
+        //scanned text from StartActivity view model instance is packed as an extra
+        //could put a different view model here
         if (contactFields.isEmpty()) {
             Utils.showSnackbar(binding.ccSpinner1, R.string.no_text)
             finish()
             return
+        } else {
+            viewModel.scannedTextCache = contactFields
         }
         with(binding) {
             editFields = arrayOf(ccEdit1, ccEdit2, ccEdit3, ccEdit4, ccEdit5,
@@ -55,7 +62,7 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
         }
 
         //map value from the scanned text to the contact field types
-        spinDexes = Utils.guessIndices(contactFields.toList())
+        spinDexes = Utils.guessIndices(viewModel.scannedTextCache)
     }
 
     /**
@@ -63,12 +70,12 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
      */
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "on resume ${contactFields.size} and the map ${spinDexes.size}" )
+        Log.d(TAG, "on resume ${viewModel.scannedTextCache.size} and the map ${spinDexes.size}" )
         //spinner index integers to set different labels for all lines of text
         //For loop runs through the rows of spinners and EditText to load the recognized text
-        setLayoutOfScannedText()
+        val contactFields = setLayoutOfScannedText()
 
-        //finish resume by setting any leftover text into Notes in last edit text
+        //finish resume by setting any leftover text into Notes in last edit text... TODO, make nice
         if (contactFields.isNotEmpty()) {
             val et = findViewById<EditText>(R.id.cc_edit10)
             val stringToSet = et.text.toString()+"\n"+contactFields.joinToString("\n")
@@ -89,8 +96,9 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
         return true
     }
 
-    private fun setLayoutOfScannedText() {
+    private fun setLayoutOfScannedText() : MutableList<String> {
         //For loop runs through the 9 rows of spinners and EditText to load the recognized text
+        val contactFields = viewModel.scannedTextCache.toMutableList()
         var spinner: Spinner
         var button: ImageButton
         for ((i, editText) in editFields.withIndex()) {
@@ -120,6 +128,7 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
                 spinner.tag = null
             }
         } //end for loop, text fields that matched contact types are set, text listeners enabled
+        return contactFields
     }
 
     private fun setSpinner(spinner: Spinner, button: ImageButton, mappedValue: String) {

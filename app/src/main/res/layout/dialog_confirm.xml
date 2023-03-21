@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/retry"
-            android:onClick="dlg_button"
             android:src="@drawable/btn_redo"/>
 
         <View
@@ -31,7 +30,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/confirm"
-            android:onClick="dlg_button"
             android:src="@drawable/btn_done" />
         <View
             android:layout_width="0dp"
@@ -43,7 +41,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/share"
-            android:onClick="dlg_button"
             android:src="@drawable/btn_share" />
         <View
             android:layout_width="0dp"
@@ -55,7 +52,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@android:string/copy"
-            android:onClick="dlg_button"
             android:src="@drawable/btn_clipboard" />
     </LinearLayout>
 

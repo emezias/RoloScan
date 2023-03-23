@@ -6,10 +6,10 @@ import android.provider.ContactsContract
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mezcode.demo.roloscan.ocrreader.databinding.ActivityCreateContactBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,18 +22,13 @@ import dagger.hilt.android.AndroidEntryPoint
  * Need to update to use 'query' params in the Manifest
  */
 @AndroidEntryPoint
-class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
-    private val viewModel: OCRViewModel by viewModels()
-
-    private lateinit var spinDexes: Map<String, Utils.SpinnerIndex?>
-    //parallel arrays used to populate the screen with the scanned text
-    private lateinit var editFields: Array<EditText>
-    private lateinit var btn_fields: Array<ImageButton>
-    private lateinit var spinners: Array<Spinner>
+class SetContactFieldsActivity : AppCompatActivity() {
+    
+    private lateinit var adapter: ScannedTextAdapter
     private lateinit var binding: ActivityCreateContactBinding
 
     companion object {
-        val TAG = SetContactFieldsActivity::class.java.simpleName
+        val TAG: String = this::class.java.simpleName
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,43 +40,13 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
         //scanned text from StartActivity view model instance is packed as an extra
         //could put a different view model here
         if (contactFields.isEmpty()) {
-            Utils.showSnackbar(binding.ccSpinner1, R.string.no_text)
+            Utils.showSnackbar(binding.progress, R.string.no_text)
             finish()
             return
-        } else {
-            viewModel.scannedTextCache = contactFields
         }
-        with(binding) {
-            editFields = arrayOf(ccEdit1, ccEdit2, ccEdit3, ccEdit4, ccEdit5,
-                ccEdit6, ccEdit7, ccEdit8, ccEdit9, ccEdit10 )
-            btn_fields = arrayOf(ccBtn1, ccBtn2, ccBtn3, ccBtn4, ccBtn5,
-                ccBtn6, ccBtn7, ccBtn8, ccBtn9, ccBtn10)
-            spinners = arrayOf(ccSpinner1, ccSpinner2, ccSpinner3, ccSpinner4, ccSpinner5,
-                ccSpinner6, ccSpinner7, ccSpinner8, ccSpinner9, ccSpinner10)
-
-        }
-
-        //map value from the scanned text to the contact field types
-        spinDexes = Utils.guessIndices(viewModel.scannedTextCache)
-    }
-
-    /**
-     * The field setup is done in onResume to always show the data, even if the user presses back
-     */
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "on resume ${viewModel.scannedTextCache.size} and the map ${spinDexes.size}" )
-        //spinner index integers to set different labels for all lines of text
-        //For loop runs through the rows of spinners and EditText to load the recognized text
-        val contactFields = setLayoutOfScannedText()
-
-        //finish resume by setting any leftover text into Notes in last edit text... TODO, make nice
-        if (contactFields.isNotEmpty()) {
-            val et = findViewById<EditText>(R.id.cc_edit10)
-            val stringToSet = et.text.toString()+"\n"+contactFields.joinToString("\n")
-            et.setText(stringToSet)
-            et.setSelection(Utils.SpinnerIndex.IND_NOTES.dex)
-        } //this happens if there are more strings than fields or strings don't map
+        adapter = ScannedTextAdapter(contactFields)
+        binding.contactFields.adapter = adapter
+        binding.contactFields.layoutManager = LinearLayoutManager(this@SetContactFieldsActivity)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -96,51 +61,6 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
         return true
     }
 
-    private fun setLayoutOfScannedText() : MutableList<String> {
-        //For loop runs through the 9 rows of spinners and EditText to load the recognized text
-        val contactFields = viewModel.scannedTextCache.toMutableList()
-        var spinner: Spinner
-        var button: ImageButton
-        for ((i, editText) in editFields.withIndex()) {
-            //set up each spinner and image button
-            button = btn_fields[i]
-            button.setOnClickListener {
-                clearText(it)
-            }
-            button.tag = editText
-            editText.addTextChangedListener(EditButton(button))
-
-            spinner = spinners[i]
-            spinner.adapter = ContactSpinnerAdapter(this)
-            //All fields on the row are variables. Inflating the layout to match the scanned text could be better
-            spinner.onItemSelectedListener = this
-
-            val textToShow = spinDexes.keys.elementAtOrNull(i)
-            textToShow?.let {
-                val spinnerIndex = spinDexes[textToShow]
-                button.isEnabled = true
-                contactFields.remove(textToShow)
-                editText.setText(textToShow)
-                setSpinner(spinner, button, textToShow)
-            } ?: {
-                // no text for this row of spinner/edit text/button
-                button.isEnabled = false
-                spinner.tag = null
-            }
-        } //end for loop, text fields that matched contact types are set, text listeners enabled
-        return contactFields
-    }
-
-    private fun setSpinner(spinner: Spinner, button: ImageButton, mappedValue: String) {
-        val spinnerIndex = spinDexes[mappedValue]
-        if (spinnerIndex != null) {
-            spinner.setSelection(spinnerIndex.dex)
-            spinner.tag = spinnerIndex
-
-        } else {
-            spinner.tag = null
-        }
-    }
 
     /**
      * This method is called by the action view on the app bar
@@ -149,33 +69,34 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
      */
     private fun saveContact() {
         Log.i(TAG, "open Contacts intent")
-        val duplicates = mutableSetOf<EditText>()
+        val scannedTextList = adapter.returnContactFields()
+        val nameKey = Utils.SpinnerIndex.values()[1]
+        if (!scannedTextList.containsValue(nameKey) ||
+            scannedTextList.values.filter { it == nameKey }.size > 1 ) {
+            Utils.showSnackbar(binding.progress, R.string.contact_error)
+            return
+        }
+        // The contact contract should have one and only one name field, not checking the rest...
         val intent = Intent(ContactsContract.Intents.Insert.ACTION).apply {
             // Sets the MIME type to match the Contacts Provider
             type = ContactsContract.RawContacts.CONTENT_TYPE
-            for (editText in editFields) {
-                val field = editText.text?.toString()
-                if (!field.isNullOrEmpty()) {
-                    // apply contact contract extras to the intent when they have text
-                    val spindex = spinners[editFields.indexOf(editText)].selectedItemPosition
-                    if (spindex != AdapterView.INVALID_POSITION) {
-                        // spindex matches enum index, aka ordinal
-                        putExtra(Utils.SpinnerIndex.values()[spindex].key, field)
-                        Log.d(TAG, "mapping field $field to intent")
-                    }
+            for(scannedText in scannedTextList.keys) {
+                val spinDex = scannedTextList[scannedText]
+                if (spinDex == null) {
+                    putExtra(ContactsContract.Intents.Insert.NOTES, scannedText)
                 } else {
-                    Log.d(TAG, "skipping field, no text")
+                    putExtra(spinDex.key, scannedText)
                 }
             }
-        } //intent creation complete
-
+        } 
+        //intent creation complete - boots and suspenders check
         if (intent.hasExtra(ContactsContract.Intents.Insert.NAME)) {
-            startActivity(intent)
             Toast.makeText(this, "Creating new contact: " + intent.getStringExtra(ContactsContract.Intents.Insert.NAME), Toast.LENGTH_LONG).show()
+            startActivity(intent)
             finish()
             //end the activity, don't want to create the same contact twice
         } else {
-            Utils.showSnackbar(findViewById(R.id.cc_spinner1), R.string.contact_error)
+            Utils.showSnackbar(binding.progress, R.string.contact_error)
             return
         }
 
@@ -184,19 +105,4 @@ class SetContactFieldsActivity : AppCompatActivity(), AdapterView.OnItemSelected
     //This logic is guided by the ContactsProvider documentation on the Android dev site
     //https://developer.android.com/training/contacts-provider/modify-data
 
-
-    /******** Click listeners *********/
-    private fun clearText(clearTextButton: View) {
-        clearTextButton.isEnabled = false
-        (clearTextButton.tag as EditText).text.clear()
-    }
-
-    override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-        //val previous = parent.tag as Int
-        //if (position == previous) return
-        parent.tag = position
-        //could have pattern matching logic check here, not sure what the tag is doing anymore
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {}
 }

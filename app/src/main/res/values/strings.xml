@@ -11,7 +11,7 @@
     <string name="gallery_prompt">Select a Photo</string>
     <string name="makeRequest">Request Permission</string>
     <string name="no_app">No apps found for sending text</string>
-    <string name="contact_error">A contact must have a name</string>
+    <string name="contact_error">A contact must have one name</string>
 
     <string name="permissionHelp">Permissions are needed to use this app</string>
     <string name="returnError">Please try again. The image is missing.</string>

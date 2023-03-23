@@ -174,17 +174,52 @@ object Utils {
             .toRegex().matches(this)
     //ouch... this regex is kind of a wild one
 
-    enum class SpinnerIndex(val dex: Int, val key: String) {
-        IND_NAME(0, ContactsContract.Intents.Insert.NAME),
-        IND_PHONE(1, ContactsContract.Intents.Insert.PHONE_ISPRIMARY),
-        IND_EMAIL(2, ContactsContract.Intents.Insert.EMAIL_ISPRIMARY),
-        IND_TITLE(3, ContactsContract.Intents.Insert.JOB_TITLE),
-        IND_COMPANY(4, ContactsContract.Intents.Insert.COMPANY),
-        IND_ADDRESS(5, ContactsContract.Intents.Insert.POSTAL),
-        IND_IM(6, ContactsContract.Intents.Insert.IM_HANDLE),
-        IND_PHONE2(7, ContactsContract.Intents.Insert.SECONDARY_PHONE),
-        IND_EMAIL2(8, ContactsContract.Intents.Insert.SECONDARY_EMAIL),
-        IND_NOTES(9, ContactsContract.Intents.Insert.NOTES)
+    enum class SpinnerIndex(val dex: Int, val key: String, val drawableResource: Int) {
+        IND_NAME(0, ContactsContract.Intents.Insert.NAME, R.drawable.ic_account_circle_white_24dp),
+        IND_PHONE(1, ContactsContract.Intents.Insert.PHONE_ISPRIMARY, R.drawable.ic_phone_white_24dp),
+        IND_EMAIL(2, ContactsContract.Intents.Insert.EMAIL_ISPRIMARY, R.drawable.ic_mail_outline_white_24dp),
+        IND_TITLE(3, ContactsContract.Intents.Insert.JOB_TITLE, R.drawable.ic_title_white_24dp),
+        IND_COMPANY(4, ContactsContract.Intents.Insert.COMPANY, R.drawable.ic_business_white_24dp),
+        IND_ADDRESS(5, ContactsContract.Intents.Insert.POSTAL, R.drawable.ic_location_on_white_24dp),
+        IND_IM(6, ContactsContract.Intents.Insert.IM_HANDLE, R.drawable.ic_chat_white_24dp),
+        IND_PHONE2(7, ContactsContract.Intents.Insert.SECONDARY_PHONE, R.drawable.ic_phone_white_24dp),
+        IND_EMAIL2(8, ContactsContract.Intents.Insert.SECONDARY_EMAIL, R.drawable.ic_mail_outline_white_24dp),
+        IND_NOTES(9, ContactsContract.Intents.Insert.NOTES, R.drawable.ic_note_add_white_24dp)
+    }
+
+    fun guessSpinnerIndex(lineOfText: String) : SpinnerIndex? {
+        var valueToSelect: SpinnerIndex? = null
+        when {
+            lineOfText.isEmpty() -> valueToSelect = null
+
+            lineOfText.isName() -> {
+                // fill in the contact name first, then the title, then the company name
+                valueToSelect = SpinnerIndex.IND_NAME
+            }
+
+            lineOfText.isEmail() || Patterns.EMAIL_ADDRESS.matcher(lineOfText).matches() -> {
+                valueToSelect = SpinnerIndex.IND_EMAIL
+            }
+
+            lineOfText.contains("@") -> {
+                valueToSelect = SpinnerIndex.IND_IM
+            }
+
+            lineOfText.isPhone() || Patterns.PHONE.matcher(lineOfText).matches()
+                    || lineOfText.contains("(") && lineOfText.contains(")") -> {
+                valueToSelect = SpinnerIndex.IND_PHONE
+            }
+
+            lineOfText.isAddress() || //digit to begin and end?
+                    (Character.isDigit(lineOfText[0]) && Character.isDigit(lineOfText[lineOfText.length - 1])) -> {
+                valueToSelect = SpinnerIndex.IND_ADDRESS
+            }
+            else -> {
+                valueToSelect = SpinnerIndex.IND_NOTES
+            }
+        }
+        Log.d("Utils", "setting $lineOfText index $valueToSelect into map")
+        return valueToSelect
     }
 
     /* This method returns the spinner indices for the ScannedCardToContactActivity

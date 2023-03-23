@@ -1,257 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mezcode.demo.roloscan.ocrreader.SetContactFieldsActivity">
-
-    <RelativeLayout
+    tools:context=".SetContactFieldsActivity">
+    <!-- Linear progress indicator -->
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="2dp"
-        android:layout_marginStart="8dp"
-        android:padding="16dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminate="true" />
 
-        <Spinner
-            android:id="@+id/cc_spinner1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:entries="@array/labels"
-            android:labelFor="@+id/cc_edit1" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/contactFields"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingBottom="16dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <ImageButton
-            android:id="@+id/cc_btn1"
-            style="@style/CloseButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner1"
-            android:contentDescription="@android:string/cut" />
-
-        <EditText
-            android:id="@+id/cc_edit1"
-            style="@style/ETStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner1"
-            android:tag="@id/cc_btn1" />
-
-        <Spinner
-            android:id="@+id/cc_spinner2"
-            style="@style/SpinnerStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit1"
-            android:labelFor="@+id/cc_edit2" />
-
-        <ImageButton
-            android:id="@+id/cc_btn2"
-            style="@style/CloseButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner2"
-            android:contentDescription="@android:string/cut"  />
-
-        <EditText
-            android:id="@+id/cc_edit2"
-            style="@style/ETStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner2"
-            android:tag="@id/cc_btn2" />
-
-        <Spinner
-            android:id="@+id/cc_spinner3"
-            style="@style/SpinnerStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit2"
-            android:labelFor="@+id/cc_edit3" />
-
-        <ImageButton
-            android:id="@+id/cc_btn3"
-            style="@style/CloseButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner3"
-            android:contentDescription="@android:string/cut" />
-
-        <EditText
-            android:id="@+id/cc_edit3"
-            style="@style/ETStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner3"
-            android:tag="@id/cc_btn3" />
-
-        <Spinner
-            android:id="@+id/cc_spinner4"
-            style="@style/SpinnerStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit3"
-            android:labelFor="@+id/cc_edit4" />
-
-        <ImageButton
-            android:id="@+id/cc_btn4"
-            style="@style/CloseButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner4"
-            android:contentDescription="@android:string/cut" />
-
-        <EditText
-            android:id="@+id/cc_edit4"
-            style="@style/ETStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner4"
-            android:tag="@id/cc_btn4" />
-
-        <Spinner
-            android:id="@+id/cc_spinner5"
-            style="@style/SpinnerStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit4"
-            android:labelFor="@+id/cc_edit5" />
-
-        <ImageButton
-            android:id="@+id/cc_btn5"
-            style="@style/CloseButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner5"
-            android:contentDescription="@android:string/cut" />
-
-        <EditText
-            android:id="@+id/cc_edit5"
-            style="@style/ETStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner5"
-            android:tag="@id/cc_btn5" />
-
-        <Spinner
-            android:id="@+id/cc_spinner6"
-            style="@style/SpinnerStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit5"
-            android:labelFor="@+id/cc_edit6" />
-
-        <ImageButton
-            android:id="@+id/cc_btn6"
-            style="@style/CloseButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner6"
-            android:contentDescription="@android:string/cut" />
-
-        <EditText
-            android:id="@+id/cc_edit6"
-            style="@style/ETStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner6"
-            android:tag="@id/cc_btn6" />
-
-        <Spinner
-            android:id="@+id/cc_spinner7"
-            style="@style/SpinnerStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit6"
-            android:labelFor="@+id/cc_edit7" />
-
-        <ImageButton
-            android:id="@+id/cc_btn7"
-            style="@style/CloseButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner7"
-            android:contentDescription="@android:string/cut" />
-
-        <EditText
-            android:id="@+id/cc_edit7"
-            style="@style/ETStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner7"
-            android:tag="@id/cc_btn7" />
-
-        <Spinner
-            android:id="@+id/cc_spinner8"
-            style="@style/SpinnerStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit7"
-            android:labelFor="@+id/cc_edit8" />
-
-        <ImageButton
-            android:id="@+id/cc_btn8"
-            style="@style/CloseButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner8"
-            android:contentDescription="@android:string/cut" />
-
-        <EditText
-            android:id="@+id/cc_edit8"
-            style="@style/ETStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner8"
-            android:tag="@id/cc_btn8" />
-
-        <Spinner
-            android:id="@+id/cc_spinner9"
-            style="@style/SpinnerStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit8"
-            android:labelFor="@+id/cc_edit9" />
-
-        <ImageButton
-            android:id="@+id/cc_btn9"
-            style="@style/CloseButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner9"
-            android:contentDescription="@android:string/cut" />
-
-        <EditText
-            android:id="@+id/cc_edit9"
-            style="@style/ETStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner9"
-            android:tag="@id/cc_btn9" />
-
-        <Spinner
-            android:id="@+id/cc_spinner10"
-            style="@style/SpinnerStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_edit9"
-            android:layout_marginBottom="8dp"
-            android:labelFor="@+id/cc_edit10" />
-
-        <ImageButton
-            android:id="@+id/cc_btn10"
-            style="@style/CloseButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner10"
-            android:contentDescription="@android:string/cut"  />
-
-        <EditText
-            android:id="@+id/cc_edit10"
-            style="@style/ETStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cc_spinner10"
-            android:tag="id/cc_btn10" />
-
-    </RelativeLayout>
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

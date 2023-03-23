@@ -12,20 +12,17 @@
     <style name="CloseButtonStyle">
         <item name="android:padding">4dp</item>
         <item name="android:background">@drawable/btn_background</item>
-        <item name="android:onClick">clearText</item>
         <item name="android:contentDescription">@android:string/cut</item>
         <item name="android:src">@drawable/btn_close</item>
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
     <style name="SpinnerStyle">
-        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_margin">8dp</item>
         <item name="android:entries">@array/labels</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
     <style name="ETStyle">
-        <item name="android:layout_marginRight">40dp</item>
         <item name="android:layout_marginTop">6dp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>

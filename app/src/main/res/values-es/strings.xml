@@ -15,7 +15,7 @@
     <string name="share">Compartir Texto</string>
     <string name="makeRequest">Pedir permiso</string>
     <string name="no_app">No se encontraron aplicaciones</string>
-    <string name="contact_error">Se requiere el nombre</string>
+    <string name="contact_error">"Se requiere un solo nombre "</string>
     <string-array name="labels">
         <item>Nombre</item>
         <item>Telefono</item>

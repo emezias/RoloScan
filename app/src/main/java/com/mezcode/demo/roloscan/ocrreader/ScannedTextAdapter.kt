@@ -63,10 +63,7 @@ class ScannedTextAdapter(private var scannedText: List<String>) : RecyclerView.A
     }
 
     inner class RecyclerTextChangeListener : TextWatcher {
-        private var position = 0
-        fun updatePosition(position: Int) {
-            this.position = position
-        }
+        var position = 0
 
         override fun beforeTextChanged(charSequence: CharSequence, i: Int, i2: Int, i3: Int) { }
 
@@ -82,7 +79,7 @@ class ScannedTextAdapter(private var scannedText: List<String>) : RecyclerView.A
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(textItem: TextItem) {
-            watcher.updatePosition(adapterPosition)
+            watcher.position = adapterPosition
             binding.spinner.setSelection(textItem.contactLabel?.dex ?: Utils.SpinnerIndex.IND_NOTES.dex)
             binding.editText.setText(textItem.scannedText)
         }
@@ -111,14 +108,8 @@ class ScannedTextAdapter(private var scannedText: List<String>) : RecyclerView.A
                     position: Int,
                     id: Long
                 ) {
-                    val textSet = binding.editText.text.toString()
-                    val spinnerIndex = Utils.SpinnerIndex.values()[position]
-                    var textItemToDrop = fieldMap.firstOrNull() { it.scannedText == textSet }
-                    if (textItemToDrop != null)  {
-                        val replaceIndex = fieldMap.indexOf(textItemToDrop)
-                        textItemToDrop = textItemToDrop.copy(contactLabel = spinnerIndex)
-                        fieldMap[replaceIndex] = textItemToDrop
-                    }
+                    val textItem = fieldMap[watcher.position]
+                    textItem.contactLabel = Utils.SpinnerIndex.values()[position]
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {

@@ -70,22 +70,25 @@ class SetContactFieldsActivity : AppCompatActivity() {
     private fun saveContact() {
         Log.i(TAG, "open Contacts intent")
         val scannedTextList = adapter.returnContactFields()
-        val nameKey = Utils.SpinnerIndex.values()[1]
-        if (!scannedTextList.containsValue(nameKey) ||
-            scannedTextList.values.filter { it == nameKey }.size > 1 ) {
+        val nameFields =
+            scannedTextList.filter { it.contactLabel == Utils.SpinnerIndex.IND_NAME }
+        if (nameFields.isEmpty() || nameFields.size > 1 ) {
             Utils.showSnackbar(binding.progress, R.string.contact_error)
             return
         }
-        // The contact contract should have one and only one name field, not checking the rest...
+
+        // The contact contract should have one and only one name field, let's see about combining
         val intent = Intent(ContactsContract.Intents.Insert.ACTION).apply {
             // Sets the MIME type to match the Contacts Provider
             type = ContactsContract.RawContacts.CONTENT_TYPE
-            for(scannedText in scannedTextList.keys) {
-                val spinDex = scannedTextList[scannedText]
-                if (spinDex == null) {
-                    putExtra(ContactsContract.Intents.Insert.NOTES, scannedText)
+            for (contactExtra in scannedTextList) {
+                if (contactExtra.contactLabel == null) {
+                    putExtra(ContactsContract.Intents.Insert.NOTES, contactExtra.scannedText)
                 } else {
-                    putExtra(spinDex.key, scannedText)
+                    putExtra(
+                        contactExtra.contactLabel?.key ?: ContactsContract.Intents.Insert.NOTES,
+                        contactExtra.scannedText
+                    )
                 }
             }
         } 

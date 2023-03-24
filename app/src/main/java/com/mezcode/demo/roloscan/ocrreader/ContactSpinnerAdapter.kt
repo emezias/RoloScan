@@ -61,7 +61,7 @@ class ContactSpinnerAdapter(private val ctx: Context) : SpinnerAdapter {
             setCompoundDrawablesWithIntrinsicBounds(
                 0, 0, Utils.SpinnerIndex.values()[position].drawableResource, 0)
         }
-        Log.d(TAG, "text got set to ${sValueList[position]}")
+        // Log.d(TAG, "text got set to ${sValueList[position]}")
         return newView
     }
 

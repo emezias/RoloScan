@@ -91,7 +91,8 @@ class SetContactFieldsActivity : AppCompatActivity() {
         } 
         //intent creation complete - boots and suspenders check
         if (intent.hasExtra(ContactsContract.Intents.Insert.NAME)) {
-            Toast.makeText(this, "Creating new contact: " + intent.getStringExtra(ContactsContract.Intents.Insert.NAME), Toast.LENGTH_LONG).show()
+            // not enough time for the confirmation
+            // Toast.makeText(this, "Creating new contact: " + intent.getStringExtra(ContactsContract.Intents.Insert.NAME), Toast.LENGTH_LONG).show()
             startActivity(intent)
             finish()
             //end the activity, don't want to create the same contact twice

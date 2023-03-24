@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.AdapterView.INVALID_POSITION
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.EditText
@@ -20,7 +21,9 @@ class ScannedTextAdapter(private var scannedText: List<String>) : RecyclerView.A
         val inflater = LayoutInflater.from(parent.context)
         // Inflate XML, don't forget, don't attach
         val binding = TextListItemBinding.inflate(inflater, parent, false)
-        return LineViewHolder(binding)
+        val vHolder = LineViewHolder(binding)
+        vHolder.setupSpinnerAdapter()
+        return vHolder
     }
 
     override fun getItemCount(): Int = scannedText.size
@@ -41,33 +44,28 @@ class ScannedTextAdapter(private var scannedText: List<String>) : RecyclerView.A
             }
 
             // can use a map to match contact contracts fields to text fields
-            val spinnerIndex: Utils.SpinnerIndex?
-            if (binding.spinner.adapter == null) {
-                setupSpinnerAdapter()
+            var spinnerIndex = fieldMap[text]
+            if (spinnerIndex == null) {
                 // guess the SpinnerIndex value based on the text when first created
                 spinnerIndex = Utils.guessSpinnerIndex(text)
-                fieldMap[text] = spinnerIndex
-            } else if (fieldMap.keys.contains(text)) {
-                spinnerIndex = fieldMap[text]
-            } else if (binding.spinner.tag != null) {
-                spinnerIndex = Utils.SpinnerIndex.values()[binding.spinner.tag as Int]
-                fieldMap[text] = spinnerIndex
-            } else {
-                spinnerIndex = Utils.SpinnerIndex.IND_NOTES
             }
+            val spinnerSelection = binding.spinner.selectedItemPosition
 
-            with(binding.spinner) {
-                tag = if (spinnerIndex != null) {
-                    setSelection(spinnerIndex.dex)
-                    spinnerIndex.dex
-                } else {
-                    null
+            if (spinnerIndex == null) {
+                //still null, really?
+                if (spinnerSelection != INVALID_POSITION) {
+                    spinnerIndex = Utils.SpinnerIndex.values()[spinnerSelection]
                 }
             }
+
+            if (spinnerIndex != null && spinnerIndex.dex != spinnerSelection) {
+                binding.spinner.setSelection(spinnerIndex.dex)
+            }
+
             with(binding.editText) {
                 setText(text)
             }
-
+            fieldMap[text] = spinnerIndex
         }
 
         /******** Clear text button click listener *********/
@@ -81,11 +79,11 @@ class ScannedTextAdapter(private var scannedText: List<String>) : RecyclerView.A
             }
         }
 
-        private fun setupSpinnerAdapter() {
+        fun setupSpinnerAdapter() {
             binding.clearButton.setOnClickListener { clearText(binding.clearButton) }
             binding.clearButton.tag = binding.editText
             binding.editText.addTextChangedListener(EditButton(binding.clearButton))
-            binding.editText.compoundDrawablePadding = 8
+            binding.editText.compoundDrawablePadding = 16
             /*ArrayAdapter.createFromResource(
                 binding.spinner.context,
                 R.array.labels,
@@ -106,7 +104,6 @@ class ScannedTextAdapter(private var scannedText: List<String>) : RecyclerView.A
                     val textSet = binding.editText.text.toString()
                     val spinnerIndex = Utils.SpinnerIndex.values()[position]
                     fieldMap[textSet] = spinnerIndex
-                    binding.spinner.tag = position
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {

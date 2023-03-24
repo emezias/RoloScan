@@ -3,6 +3,7 @@ package com.mezcode.demo.roloscan.ocrreader
 import android.content.Context
 import android.database.DataSetObserver
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,39 +16,17 @@ import androidx.core.content.res.ResourcesCompat
  * This spinner adapter is shared among several spinner views
  * Once an item is set, it cannot be reused
  */
-class ContactSpinnerAdapter(ctx: Context) : SpinnerAdapter {
-    val TAG = ContactSpinnerAdapter::class.java.simpleName
-
-    lateinit var sValueList: Array<String>
-    lateinit var spinIcons: Set<Drawable?>
-
-    init {
-        val rsrcs = ctx.resources
-        val thm = ctx.theme
-        sValueList = rsrcs.getStringArray(R.array.labels)
-        spinIcons = setOf(
-            ResourcesCompat.getDrawable(rsrcs, R.drawable.ic_account_circle_white_24dp, thm),
-            ResourcesCompat.getDrawable(rsrcs, R.drawable.ic_phone_white_24dp, thm),
-            ResourcesCompat.getDrawable(rsrcs, R.drawable.ic_mail_outline_white_24dp, thm),
-            ResourcesCompat.getDrawable(rsrcs, R.drawable.ic_business_white_24dp, thm),
-            ResourcesCompat.getDrawable(rsrcs, R.drawable.ic_title_white_24dp, thm),
-            ResourcesCompat.getDrawable(rsrcs, R.drawable.ic_location_on_white_24dp, thm),
-            ResourcesCompat.getDrawable(rsrcs, R.drawable.ic_chat_white_24dp, thm),
-            ResourcesCompat.getDrawable(rsrcs, R.drawable.ic_note_add_white_24dp, thm),
-            ResourcesCompat.getDrawable(rsrcs, R.drawable.ic_phone_white_24dp, thm),
-            ResourcesCompat.getDrawable(rsrcs, R.drawable.ic_mail_outline_white_24dp, thm),
-        )
-        // cannot set R drawable values as an integer array in values
-    }
-
+class ContactSpinnerAdapter(private val ctx: Context) : SpinnerAdapter {
+    private val TAG: String = this::class.java.simpleName
+    private var sValueList: Array<String> = ctx.resources.getStringArray(R.array.labels)
+    
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View? {
         var newView: View? = convertView
         if (position >= sValueList.size) return null
-        if (newView == null) {
+        if (convertView == null) {
             newView = LayoutInflater.from(parent.context).inflate(R.layout.spinner_item, null)
-            newView.tag = newView.findViewById(R.id.labelText)
         }
-        (newView?.tag as TextView).text = sValueList[position]
+        (newView as TextView).text = sValueList[position]
         return newView
     }
 
@@ -74,12 +53,15 @@ class ContactSpinnerAdapter(ctx: Context) : SpinnerAdapter {
         if (position >= sValueList.size) return null
         if (newView == null) {
             newView = LayoutInflater.from(parent.context).inflate(R.layout.spinner_item, null)
-            newView.tag = newView.findViewById(R.id.labelText)
         }
-        (newView?.tag as TextView).text = sValueList[position]
-        (newView.tag as TextView).setCompoundDrawablesRelativeWithIntrinsicBounds(
-            null, null, spinIcons.elementAt(position), null
-        )
+        
+        with (newView as TextView) {
+            text = sValueList[position]
+            //Log.d(TAG, "setting drawable ${Utils.SpinnerIndex.values()[position].drawableResource}")
+            setCompoundDrawablesWithIntrinsicBounds(
+                0, 0, Utils.SpinnerIndex.values()[position].drawableResource, 0)
+        }
+        Log.d(TAG, "text got set to ${sValueList[position]}")
         return newView
     }
 

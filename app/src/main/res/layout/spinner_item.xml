@@ -3,6 +3,6 @@
     android:id="@+id/labelText"
     android:layout_width="wrap_content"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:padding="4dp"
+    android:padding="12dp"
     android:drawablePadding="18dp"
     style="?android:attr/dropDownItemStyle" />

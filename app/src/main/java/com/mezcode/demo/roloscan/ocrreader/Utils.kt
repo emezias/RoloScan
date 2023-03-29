@@ -141,7 +141,6 @@ object Utils {
                     val textFields = mutableListOf<String>()
                     for (block in visionText.textBlocks) {
                         for (line in block.lines) {
-                            Log.v(StartActivity.TAG, "line by line ${line.text}")
                             textFields.add(line.text)
                         }
                     }
@@ -150,7 +149,7 @@ object Utils {
                 }
                 .addOnFailureListener { e ->
                     // Task failed with an exception
-                    Log.e(StartActivity.TAG, "exception scanning text ${e.message}")
+                    Log.e(this::class.simpleName, "exception scanning text ${e.message}")
                     client.close()
                     callbacks.handleError(R.string.no_text)
                 }

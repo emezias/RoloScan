@@ -63,16 +63,11 @@ class ConfirmTextDialog : DialogFragment(), View.OnClickListener {
                 btn.context.startActivity(tnt)
             }
             R.id.dlg_retry -> with(context as StartActivity) {
-                if (viewModel.galleryRequest) {
-                    this.getPhoto(this.startGallery)
-                } else {
-                    this.getPhoto(startPhoto)
-                }
+                dialog?.cancel()
             }
             R.id.dlg_clipboard -> {
                 val clipboard = btn.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText(getString(R.string.scan2label), binding.dlgMessage.text)
-                Log.v(StartActivity.TAG, "confirm dialog clip ${binding.dlgMessage.text}")
                 clipboard.setPrimaryClip(clip)
                 Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show()
             }
@@ -89,7 +84,7 @@ class ConfirmTextDialog : DialogFragment(), View.OnClickListener {
                 }
             }
         }
-        dismiss()
+        dialog?.dismiss()
     }
 
 }

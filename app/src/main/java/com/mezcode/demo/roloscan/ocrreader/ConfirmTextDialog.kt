@@ -62,7 +62,7 @@ class ConfirmTextDialog : DialogFragment(), View.OnClickListener {
                 tnt.putExtra(SetContactFieldsActivity.TAG, viewModel.scannedTextCache.toTypedArray())
                 btn.context.startActivity(tnt)
             }
-            R.id.dlg_retry -> with(context as StartActivity) {
+            R.id.dlg_retry -> {
                 dialog?.cancel()
             }
             R.id.dlg_clipboard -> {

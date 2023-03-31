@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,10 +22,9 @@ import javax.inject.Inject
 class OCRViewModel @Inject constructor(private val contentResolver: ContentResolver): ViewModel(), Utils.RoloMLKit {
 
     private val _myUiState = MutableStateFlow<OCRViewState>(OCRViewState.Loading)
-    val myUiState: StateFlow<OCRViewState> = _myUiState
+    val myUiState = _myUiState.asStateFlow()
 
     lateinit var scannedTextCache : List<String>
-    var galleryRequest = false
 
     override val resolver: ContentResolver
         get() = contentResolver

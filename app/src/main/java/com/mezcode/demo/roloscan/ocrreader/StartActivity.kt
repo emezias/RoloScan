@@ -114,12 +114,12 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
         // TODO fix dialog replay
         val tmp = supportFragmentManager.findFragmentByTag("ConfirmTextDialog")
         if (tmp != null) {
-
-            (tmp as ConfirmTextDialog).dismiss()
-            supportFragmentManager.beginTransaction().remove(tmp).commitNowAllowingStateLoss()
+            val tx = supportFragmentManager.beginTransaction().remove(tmp)
+            ConfirmTextDialog().show(tx, "ConfirmTextDialog")
+        } else {
+            ConfirmTextDialog().show(supportFragmentManager, "ConfirmTextDialog")
         }
         progressBar.visibility = View.GONE
-        ConfirmTextDialog().show(supportFragmentManager, "ConfirmTextDialog")
     }
 
     private fun getTmpFileUri(): Uri {

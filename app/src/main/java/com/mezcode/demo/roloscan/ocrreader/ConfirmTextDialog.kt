@@ -16,7 +16,9 @@ import dagger.hilt.android.AndroidEntryPoint
 /**
  * Created by emezias on 4/22/17.
  * This class shows a confirmation the user to check scanned text for accuracy
- * The user can retry, create a contact record, share the text or copy to the pasteboard
+ * There are 4 buttons to retry, create a contact record, share the text or copy to the pasteboard
+ * This dialog replays if a second photo or image is scanned
+ * todo try using the AlertDialogBuilder style to see if that will improve the replay on back button
  */
 @AndroidEntryPoint
 class ConfirmTextDialog : DialogFragment(), View.OnClickListener {

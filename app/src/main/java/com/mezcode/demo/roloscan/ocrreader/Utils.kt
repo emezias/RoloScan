@@ -7,12 +7,10 @@ package com.mezcode.demo.roloscan.ocrreader
  */
 
 import android.content.ContentResolver
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
-import android.os.Environment
 import android.provider.ContactsContract
 import android.util.Log
 import android.util.Patterns
@@ -24,7 +22,6 @@ import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.io.IOException
 import java.io.InputStream
 
@@ -43,17 +40,6 @@ object Utils {
         fun handleScanText(resultText: List<String>)
     }
 
-    /**
-     * This is the path with or without the SDCard and pictures directory from the system
-     * @param ctx
-     * @return
-     */
-    fun getPathForProvider(ctx: Context): File {
-        return when (Environment.getExternalStorageState()) {
-            Environment.MEDIA_MOUNTED -> ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
-            else -> ctx.filesDir
-        } //timestamp is setting a unique filename
-    }
 
     @Throws(IOException::class)
     internal fun loadImage(contentResolver: ContentResolver, imageUri: Uri): InputImage? {
@@ -135,7 +121,7 @@ object Utils {
         } else {
             val client = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
             // It's probably okay to throw away the (result) task and not bother to declare
-            val result = client.process(image)
+            client.process(image)
                 .addOnSuccessListener { visionText ->
                     // Task completed, mlKit Text tree returned
                     val textFields = mutableListOf<String>()
@@ -159,7 +145,7 @@ object Utils {
     // do the contact matching things - let's use extensions
     private fun String.isName(): Boolean  = "^[a-zA-Z\\\\s]+".toRegex().matches(this)
 
-    private fun String.isAddress(): Boolean = "/^\\s*\\S+(?:\\s+\\S+){2}/".toRegex().matches(this)
+    private fun String.isAddress(): Boolean = "^\\s*\\S+(?:\\s+\\S+){2}/".toRegex().matches(this)
 
     //almost perfect email regex http://emailregex.com/
     private fun String.isEmail(): Boolean =
@@ -175,8 +161,8 @@ object Utils {
 
     enum class SpinnerIndex(val dex: Int, val key: String, val drawableResource: Int) {
         IND_NAME(0, ContactsContract.Intents.Insert.NAME, R.drawable.ic_account_circle_white_24dp),
-        IND_PHONE(1, ContactsContract.Intents.Insert.PHONE_ISPRIMARY, R.drawable.ic_phone_white_24dp),
-        IND_EMAIL(2, ContactsContract.Intents.Insert.EMAIL_ISPRIMARY, R.drawable.ic_mail_outline_white_24dp),
+        IND_PHONE(1, ContactsContract.Intents.Insert.PHONE, R.drawable.ic_phone_white_24dp),
+        IND_EMAIL(2, ContactsContract.Intents.Insert.EMAIL, R.drawable.ic_mail_outline_white_24dp),
         IND_TITLE(3, ContactsContract.Intents.Insert.JOB_TITLE, R.drawable.ic_title_white_24dp),
         IND_COMPANY(4, ContactsContract.Intents.Insert.COMPANY, R.drawable.ic_business_white_24dp),
         IND_ADDRESS(5, ContactsContract.Intents.Insert.POSTAL, R.drawable.ic_location_on_white_24dp),
@@ -187,7 +173,7 @@ object Utils {
     }
 
     fun guessSpinnerIndex(lineOfText: String) : SpinnerIndex? {
-        var valueToSelect: SpinnerIndex? = null
+        val valueToSelect: SpinnerIndex?
         when {
             lineOfText.isEmpty() -> valueToSelect = null
 
@@ -219,74 +205,6 @@ object Utils {
         }
         Log.d("Utils", "setting $lineOfText index $valueToSelect into map")
         return valueToSelect
-    }
-
-    /* This method returns the spinner indices for the ScannedCardToContactActivity
-    * if there is no pattern match, contact activity has to handle the default -1 index value
-    * @param values - the text blocks read in by the TextDetector
-    * @return - the indices for the spinners that have a value
-    */
-    fun guessIndices(values: List<String>): HashMap<String, SpinnerIndex?> {
-        Log.d(TAG, "get Indices")
-        val selected = ArrayList<SpinnerIndex>()
-        //try to match each string value to a contact field label and put them into a map
-        val map = HashMap<String, SpinnerIndex?>()
-        var valueToSelect: SpinnerIndex?
-        for (valueShown in values) {
-            when {
-                valueShown.isEmpty() -> valueToSelect = null
-
-                valueShown.isName() -> {
-                    // fill in the contact name first, then the title, then the company name
-                    valueToSelect = SpinnerIndex.IND_NAME
-                    if (map.values.contains(valueToSelect)) {
-                        valueToSelect = SpinnerIndex.IND_TITLE
-                    }
-                    if (map.values.contains(valueToSelect)) {
-                        valueToSelect = SpinnerIndex.IND_COMPANY
-                    }
-                }
-
-                valueShown.isEmail() || Patterns.EMAIL_ADDRESS.matcher(valueShown).matches() -> {
-                    valueToSelect = SpinnerIndex.IND_EMAIL
-                    if (map.values.contains(valueToSelect)) {
-                        valueToSelect = SpinnerIndex.IND_EMAIL2
-                    }
-                }
-
-                valueShown.contains("@") -> {
-                    valueToSelect = SpinnerIndex.IND_IM
-                }
-
-                valueShown.isPhone() || Patterns.PHONE.matcher(valueShown).matches()
-                        || valueShown.contains("(") && valueShown.contains(")") -> {
-                    valueToSelect = SpinnerIndex.IND_PHONE
-                    if (map.values.contains(valueToSelect)) {
-                        valueToSelect = SpinnerIndex.IND_PHONE2
-                    }
-                }
-
-                valueShown.isAddress() || //digit to begin and end?
-                        (Character.isDigit(valueShown[0]) && Character.isDigit(valueShown[valueShown.length - 1])) -> {
-                    valueToSelect = SpinnerIndex.IND_ADDRESS
-                }
-                else -> {
-                    valueToSelect = SpinnerIndex.IND_NOTES
-                }
-            }
-            valueToSelect?.let {
-                selected.add(valueToSelect)
-                map[valueShown] = valueToSelect
-                // The same SpinnerIndex can be associated with multiple keys (input strings)
-                // there could be many SpinnerIndex.IND_NOTES
-                // this logic maps one company, one job title
-                // A 'notes' field of extra strings can go into the SetContactFieldsActivity form
-            }
-
-            Log.d("Utils", "setting $valueShown index $valueToSelect into map")
-        } //end for loop string values
-        selected.clear()
-        return map
     }
 
 }

@@ -88,14 +88,13 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
     private fun setUpStateFlow() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                Log.d(TAG, "call to collect viewmodel flow")
                 viewModel.myUiState.collect {
                     when(it) {
                         is OCRViewState.Success -> {
-                            showConfirmDialog(it.scannedTextFields)
+                            showConfirmDialog()
                         }
                         is OCRViewState.Loading -> {
-                            Log.d(TAG, "Loading state")
+                            Log.i(TAG, "Loading state")
                         }
                         is OCRViewState.Error -> {
                             showSnackbar(anchor, it.errorString ?: R.string.retry)
@@ -108,9 +107,9 @@ class StartActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
 
     /**
      * This dialog will show the scanned text and allow the user to proceed or retry
-     * @param displayText the strings read from the selected photo or gallery image
+     * The strings read from the selected photo or gallery image are in the shared view model
      */
-    private fun showConfirmDialog(displayText: List<String>) {
+    private fun showConfirmDialog() {
         // TODO fix dialog replay
         val tmp = supportFragmentManager.findFragmentByTag("ConfirmTextDialog")
         if (tmp != null) {

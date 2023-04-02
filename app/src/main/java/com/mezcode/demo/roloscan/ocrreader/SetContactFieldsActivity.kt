@@ -6,8 +6,6 @@ import android.provider.ContactsContract
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.*
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mezcode.demo.roloscan.ocrreader.databinding.ActivityCreateContactBinding
@@ -92,10 +90,11 @@ class SetContactFieldsActivity : AppCompatActivity() {
                 }
             }
         } 
-        //intent creation complete - boots and suspenders check
+        //intent creation complete - boots and suspenders check for a name
         if (intent.hasExtra(ContactsContract.Intents.Insert.NAME)) {
-            // not enough time for the confirmation
-            // Toast.makeText(this, "Creating new contact: " + intent.getStringExtra(ContactsContract.Intents.Insert.NAME), Toast.LENGTH_LONG).show()
+            if (intent.hasExtra(ContactsContract.Intents.Insert.PHONE)) {
+                intent.putExtra(ContactsContract.Intents.Insert.PHONE_ISPRIMARY, true)
+            }
             startActivity(intent)
             finish()
             //end the activity, don't want to create the same contact twice
